@@ -1,28 +1,34 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Linking } from 'react-native';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
 
 export default function LinksScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <OptionButton
-        icon="md-school"
-        label="Read the Expo documentation"
-        onPress={() => WebBrowser.openBrowserAsync('https://docs.expo.io')}
-      />
-
-      <OptionButton
         icon="md-compass"
-        label="Read the React Navigation documentation"
-        onPress={() => WebBrowser.openBrowserAsync('https://reactnavigation.org')}
+        label="Visit our website"
+        onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
       />
 
       <OptionButton
-        icon="ios-chatboxes"
-        label="Ask a question on the forums"
-        onPress={() => WebBrowser.openBrowserAsync('https://forums.expo.io')}
+        icon="ios-people"
+        label="Learn more about us"
+        onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
+      />
+
+      <OptionButton
+        icon="md-at"
+        label="Contact us"
+        onPress={() => Linking.openURL('mailto:contact.shelfcheck@gmail.com')}
+      />
+
+      <OptionButton
+        icon="md-cafe"
+        label="Buy us a coffee"
+        onPress={() => Linking.openURL('https://www.shelfcheck.io/buyacoffee')}
         isLastOption
       />
     </ScrollView>

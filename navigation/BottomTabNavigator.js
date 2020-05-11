@@ -61,8 +61,8 @@ function getHeaderTitle(route) {
     case 'Stores':
       return 'Nearby Stores';
     case 'List':
-      return 'Your list';
+      return 'Your List';
     case 'More':
-      return 'Links to learn more';
+      return 'More Links';
   }
 }

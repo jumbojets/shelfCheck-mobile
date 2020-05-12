@@ -30,19 +30,19 @@ export default function HomeScreen() {
 
             <View style={{width:"100%", height: "32%", backgroundColor:"white", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity style={{height: "100%", width: "40%", borderRadius: "90", backgroundColor: "#7256f3"}} />
+              <TouchableOpacity style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7256f3"}} />
 
-              <TouchableOpacity style={{height: "100%", width: "40%", borderRadius: "90", backgroundColor: "#7999ed"}} />
+              <TouchableOpacity style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7999ed"}} />
 
             </View>
 
             <View style={{width:"100%", height: "32%", backgroundColor:"white", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity style={{height: "100%", width: "40%", borderRadius: "90", backgroundColor: "#7b85f4", alignItems: "center", flexDirection: "column", justifyContent: "space-evenly"}}>
+              <TouchableOpacity style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7b85f4", alignItems: "center", flexDirection: "column", justifyContent: "space-evenly"}}>
 
               </TouchableOpacity>
 
-              <TouchableOpacity style={{height: "100%", width: "40%", borderRadius: "90", backgroundColor: "#6048d9"}} />
+              <TouchableOpacity style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#6048d9"}} />
 
             </View>
 
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   welcomeContainer: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: "20%",
     marginBottom: 20,
   },
   welcomeImage: {

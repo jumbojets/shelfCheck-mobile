@@ -8,6 +8,6 @@ Type in the command below to run project. Can run in browser, simulator or in ex
 
 ### Dependencies
 
-expo-linear-gradient used for styling
+All dependenices are from expo. Install with this command
 
-`expo install expo-linear-gradient`
+`yarn add expo`

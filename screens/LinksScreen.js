@@ -6,32 +6,35 @@ import { RectButton, ScrollView } from 'react-native-gesture-handler';
 
 export default function LinksScreen() {
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <OptionButton
-        icon="md-compass"
-        label="Visit our website"
-        onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
-      />
+    <View style={styles.main}>
+      <Text style={styles.title}>More info</Text>
+      <View style={styles.container} contentContainerStyle={styles.contentContainer}>
+        <OptionButton
+          icon="md-compass"
+          label="Visit our website"
+          onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
+        />
 
-      <OptionButton
-        icon="ios-people"
-        label="Learn more about us"
-        onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
-      />
+        <OptionButton
+          icon="ios-people"
+          label="Learn more about us"
+          onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
+        />
 
-      <OptionButton
-        icon="md-at"
-        label="Contact us"
-        onPress={() => Linking.openURL('mailto:contact.shelfcheck@gmail.com')}
-      />
+        <OptionButton
+          icon="md-at"
+          label="Contact us"
+          onPress={() => Linking.openURL('mailto:contact.shelfcheck@gmail.com')}
+        />
 
-      <OptionButton
-        icon="md-cafe"
-        label="Buy us a coffee"
-        onPress={() => Linking.openURL('https://www.shelfcheck.io/buyacoffee')}
-        isLastOption
-      />
-    </ScrollView>
+        <OptionButton
+          icon="md-cafe"
+          label="Buy us a coffee"
+          onPress={() => Linking.openURL('https://www.shelfcheck.io/buyacoffee')}
+          isLastOption
+        />
+      </View>
+    </View>
   );
 }
 
@@ -51,9 +54,20 @@ function OptionButton({ icon, label, onPress, isLastOption }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  main: {
     flex: 1,
+    flexDirection: "column",
+  },
+  container: {
     backgroundColor: '#fafafa',
+    top: "10%"
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#7e84f3",
+    top: "7%",
+    textAlign: "center",
   },
   contentContainer: {
     paddingTop: 15,

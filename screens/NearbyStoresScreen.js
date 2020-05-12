@@ -1,13 +1,28 @@
 import * as React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import StoreScreen from './StoreScreen'
 
 import { MonoText } from '../components/StyledText';
 
 import GetClosestStores from '../api/GetClosestStores';
 
-export default class NearbyStoresScreen extends React.Component {
+const Stack = createStackNavigator();
+
+export default function NearbyStoresPage() {
+	return (
+		<NavigationContainer independent={true}>
+			<Stack.Navigator screenOptions={{headerShown: false}}>
+				<Stack.Screen name="MainScreen" component={NearbyStoresScreen} />
+				<Stack.Screen name="StoreScreen" component={StoreScreen} />
+			</Stack.Navigator>
+		</NavigationContainer>
+	);
+}
+
+export class NearbyStoresScreen extends React.Component {
 	state = {contents: [], loading: true};
 
 	async componentDidMount() {
@@ -20,20 +35,26 @@ export default class NearbyStoresScreen extends React.Component {
 	}
 
 	render() {
+		const { navigation } = this.props;
 		return (
 			<View style={styles.main}>
+				<Text style={styles.title}>Closest stores to you</Text>
 				<View style={styles.container}>
-					<ScrollView showsVerticalScrollIndicator={false}>
+					<ScrollView showsVerticalScrollIndicator={false} style={{padding: 0, margin: 0}}>
 						{
 							this.state.contents.map((item, index) => (
 								<TouchableOpacity
-									onPress={() => Alert.alert("CLICKED", item._id)}
+									onPress={() =>
+										navigation.push('StoreScreen', {
+											store_id: item._id
+										})
+									}
 									key={item._id}
 									style={styles.storeButton}
 								>
 									<Text style={styles.storeNameText}>{item.name}</Text>
 									<Text style={styles.addressText}>{item.address}</Text>
-									<Text style={styles.distanceText}>{item.distance.toFixed(1)} miles away</Text>
+									<Text style={styles.distanceText}>{item.distance.toFixed(2)} miles away</Text>
 								</TouchableOpacity>
 							))
 						}
@@ -47,19 +68,25 @@ export default class NearbyStoresScreen extends React.Component {
 
 const styles = StyleSheet.create({
 	main: {
-		//backgroundColor: '#66c1e0',
 		backgroundColor: '#e8eff1',
 		height: "100%",
 	},
+	title: {
+		fontSize: 30,
+		fontWeight: "bold",
+		color: "#7e84f3",
+		top: "7%",
+		textAlign: "center",
+	},
 	container: {
-		flex: 1,
-		//backgroundColor: '#e8eff1',
 		backgroundColor: '#66c1e0',
 		paddingTop: 0,
 		paddingHorizontal: 20,
 		paddingBottom: 0,
-		borderRadius: 30,
-		margin: "5%",
+		borderRadius: 20,
+		marginHorizontal: "5%",
+		marginTop: "20%",
+		height: "80%",
   	},
   	storeButton: {
   		marginTop: 27,

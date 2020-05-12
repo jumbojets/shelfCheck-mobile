@@ -1,6 +1,7 @@
 import * as React from 'react';
-
 import { Alert } from 'react-native';
+
+import keys from './keys.config';
 
 const ENDPOINT = 'https://api.shelfcheck.io/dev/'
 
@@ -16,7 +17,8 @@ const packageRequest = async (key, contents) => {
   };
 }
 
-const CommonAPI = async ({fn, key, contents, onSuccess, onFailure, onError}) => {
+const CommonAPI = async ({fn, contents, onSuccess, onFailure, onError}) => {
+  let key = keys[fn];
   return fetch(ENDPOINT + fn, await packageRequest(key, contents))
     .then((response) => {
       if (response.status == 200) return response.json();

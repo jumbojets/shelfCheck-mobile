@@ -1,14 +1,9 @@
 import React from 'react';
-import CommonAPI from './CommonAPI.js';
-
 import { Alert } from 'react-native'
 
+import CommonAPI from './CommonAPI.js';
+
 const FUNCTION = 'get-closest-stores'
-
-// cannot keep this in plaintext
-const KEY = 'EYTXEa2hwU39JK2MgbCEt3uuej2nuQZG4tsjEBvt'
-
-
 
 const GetClosestStores = ({longitude, latitude}) => {
 	const contents = {
@@ -30,7 +25,6 @@ const GetClosestStores = ({longitude, latitude}) => {
 
 	return CommonAPI({
 		fn: FUNCTION,
-		key: KEY,
 		contents: contents,
 		onSuccess: onSuccess,
 		onFailure: onFailure,

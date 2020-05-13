@@ -1,6 +1,8 @@
 import { Text, StyleSheet, View, TouchableOpacity, Alert } from 'react-native';
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { ScrollView } from 'react-native-gesture-handler';
+
 
 import { Dimensions } from 'react-native';
 
@@ -41,26 +43,28 @@ export default class StoreScreen extends React.Component {
 					<View style={styles.storeDetails}>
 						<Text style={styles.name}>{this.state.contents.name}</Text>
 						<TouchableOpacity onPress={() => Alert.alert("this will open maps application")}>
-							<Text style={{color: "#fff"}}>{this.state.contents.address}</Text>
-							<Text style={{color: "#fff"}}>{this.state.contents.distance} miles away</Text>
-							<Text style={{color: "#fff"}}>Click to Navigate</Text>
+							<Text style={{color: "#fff", fontSize: 14}}>{this.state.contents.address}</Text>
+							<Text style={{color: "#fff", fontSize: 14}}>{this.state.contents.distance} miles away</Text>
+							<Text style={{color: "#fff", fontSize: 14}}>Click to Navigate</Text>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.inventory}>
+					<ScrollView style={styles.inventory}>
 						<Text style={styles.name}>Inventory</Text>
 						<Text style={styles.inventoryDescription}>According to user reports, these are estimated quantities of items left.</Text>
 						<Text style={styles.inventoryDescription}>Click on an item for more information.</Text>
 						{
 							this.state.contents.numberOfItems === 0 || this.state.loading ?
-							<Text style={{color: "#fff"}}>No reports of items in stock.</Text>
+
+							<Text style={{color: "#fff", fontSize: 20}}>No reports of items in stock.</Text>
 							:
 							this.state.contents.inventory.map((item, index) => (
 								<TouchableOpacity style={styles.itemContainer}>
-									<Text style={styles.item}>{item.item_name} ~ {item.approximate_quantity} units</Text>
+									<Text style={styles.itemLeft}>{item.item_name}</Text>
+									<Text style={styles.itemRight}>{item.approximate_quantity} units</Text>
 								</TouchableOpacity>
 							))
 						}
-					</View>
+					</ScrollView>
 				</View>
 			</View>
 		)
@@ -122,10 +126,24 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	itemContainer: {
-		paddingTop: 6,
+		backgroundColor: "#fff",
+		marginTop: 6,
+		borderRadius: 15,
+		height: 45,
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 	},
-	item: {
-		color: "#fff",
-		fontSize: 20,
+	itemLeft: {
+		color: "#7e84f3",
+		fontSize: 17,
+		fontWeight: "bold",
+		paddingLeft: "6%",
+	},
+	itemRight: {
+		color: "#7e84f3",
+		fontSize: 17,
+		fontWeight: "bold",
+		paddingRight: "6%",
 	}
 });

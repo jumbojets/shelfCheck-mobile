@@ -58,7 +58,7 @@ export default class StoreScreen extends React.Component {
 							<Text style={{color: "#fff", fontSize: 20}}>No reports of items in stock.</Text>
 							:
 							this.state.contents.inventory.map((item, index) => (
-								<TouchableOpacity style={styles.itemContainer}>
+								<TouchableOpacity key={index} style={styles.itemContainer}>
 									<Text style={styles.itemLeft}>{item.item_name}</Text>
 									<Text style={styles.itemRight}>~ {item.approximate_quantity.toFixed(0)} units</Text>
 								</TouchableOpacity>

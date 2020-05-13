@@ -53,7 +53,7 @@ export default class AddDataScreen extends React.Component {
 	}
 
 	render() {
-
+		const { navigation } = this.props;
 		return (
 			<View style={styles.main}>
 				<LinearGradient style={styles.container}

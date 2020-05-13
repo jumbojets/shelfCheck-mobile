@@ -5,6 +5,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import NearbyStoresScreen from '../screens/NearbyStoresScreen';
 import LinksScreen from '../screens/LinksScreen';
+import YourListScreen from '../screens/YourListScreen';
 import Colors from '../constants/Colors';
 
 const BottomTab = createBottomTabNavigator();
@@ -41,7 +42,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="List"
-        component={HomeScreen}
+        component={YourListScreen}
         options={{
           title: 'Your List',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-cart" />,

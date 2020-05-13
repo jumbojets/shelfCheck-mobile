@@ -48,7 +48,8 @@ export default class StoreScreen extends React.Component {
 							<Text style={{color: "#fff", fontSize: 14}}>Click to Navigate</Text>
 						</TouchableOpacity>
 					</View>
-					<ScrollView style={styles.inventory}>
+					<View style={styles.inventory}>
+					<ScrollView>
 						<Text style={styles.name}>Inventory</Text>
 						<Text style={styles.inventoryDescription}>According to user reports, these are estimated quantities of items left.</Text>
 						<Text style={styles.inventoryDescription}>Click on an item for more information.</Text>
@@ -65,6 +66,7 @@ export default class StoreScreen extends React.Component {
 							))
 						}
 					</ScrollView>
+					</View>
 				</View>
 			</View>
 		)
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	storeDetails: {
-		height: 0.14 * Dimensions.get('window').height,
+		height: "30%",
 		marginTop: "5%",
 		paddingHorizontal: "5%",
 		backgroundColor: "#66c1e0",
@@ -109,6 +111,8 @@ const styles = StyleSheet.create({
 	},
 	inventory: {
 		marginTop: "5%",
+		// height: Dimensions.get("window").height * 0.9,
+		height: "90%",
 		borderRadius: 15,
 		paddingHorizontal: "5%",
 		paddingTop: "5%",

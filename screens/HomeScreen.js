@@ -1,10 +1,12 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert, Modal } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert, Dimensions } from 'react-native';
+import Modal from 'react-native-modal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { MonoText } from '../components/StyledText';
 
@@ -24,6 +26,10 @@ export default function HomePage() {
 }
 
 export function HomePageScreen({ navigation }) {
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [itemCategory, setItemCategory] = React.useState("Nutrition");
+  const [modalColor, setModalColor] = React.useState("");
+
   return (
       <View style={styles.container}>
       <ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
@@ -41,25 +47,56 @@ export function HomePageScreen({ navigation }) {
           alignItems: "center",
         }}>
 
+        <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)} animationIn="slideInLeft" backdropOpacity={0.55}>
+          <View style={{
+            marginTop: "16%",
+            backgroundColor:"white",
+            width: Dimensions.get("window").width*0.90,
+            borderRadius: 30,
+            backgroundColor: modalColor,
+            padding: "5%",
+          }}>
+
+            <View style={styles.modalTitleContainer}>
+              <Text style={styles.modalTitle}>{itemCategory}</Text>
+
+              <TouchableOpacity style={styles.modalBackButton} onPress={() => setModalVisible(false)}>
+                <Icon name="remove" size={30} color={"#fff"} />
+              </TouchableOpacity>
+            </View>
+
+            {
+
+              itemsByCategory[itemCategory].map((item, index) => (
+                <TouchableOpacity key={index} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>{item}</Text>
+                </TouchableOpacity>
+
+              ))
+
+            }
+
+          </View>
+        </Modal>
+
+
           <View style={styles.itemCategoryButtonsContainer}>
 
             <Text style={styles.questionText}>What would you{"\n"}like to find?</Text>
 
             <View style={{width:"100%", height: "32%", backgroundColor:"white", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7256f3"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Nutrition"); setModalColor("#7256f3")}} style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7256f3"}} />
 
-              <TouchableOpacity style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7999ed"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Health"); setModalColor("#7999ed")}} style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7999ed"}} />
 
             </View>
 
             <View style={{width:"100%", height: "32%", backgroundColor:"white", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7b85f4", alignItems: "center", flexDirection: "column", justifyContent: "space-evenly"}}>
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Cleaning"); setModalColor("#7b85f4")}} style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7b85f4", alignItems: "center", flexDirection: "column", justifyContent: "space-evenly"}} />
 
-              </TouchableOpacity>
-
-              <TouchableOpacity style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#6048d9"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Power"); setModalColor("#6048d9")}} style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#6048d9"}} />
 
             </View>
 
@@ -110,6 +147,32 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 25,
   },
+  modalTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  modalTitle: {
+    fontWeight: "bold",
+    fontSize: 40,
+    color: "#fff",
+  },
+  modalButton: {
+    width: "100%",
+    backgroundColor: "#fff3",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    height: 60,
+    marginVertical: 5,
+    borderRadius: 25,
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
   addDataText: {
     color: "#fff",
     fontSize: 23,
@@ -135,4 +198,21 @@ const styles = StyleSheet.create({
     marginTop: 3,
     marginLeft: -10,
   },
+  modalBackButton: {
+    height: 40,
+    // marginBottom: 5,
+    width: 40,
+    borderRadius: 25,
+    backgroundColor: "#66c1e0",
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: "center",
+  },
 });
+
+const itemsByCategory = {
+  Nutrition: ["Bread", "Milk", "Eggs", "Bottled Water", "Ground Beef"],
+  Health: ["Toilet Paper", "Diapers", "Masks"],
+  Cleaning: ["Garbage Bags", "Disinfectant Wipes", "Hand Sanitizer", "Hand Soap", "Paper Towels"],
+  Power: ["Batteries", "Flashlights"],
+}

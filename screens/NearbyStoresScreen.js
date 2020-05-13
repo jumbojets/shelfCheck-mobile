@@ -38,9 +38,9 @@ export class NearbyStoresScreen extends React.Component {
 		const { navigation } = this.props;
 		return (
 			<View style={styles.main}>
-				<Text style={styles.title}>Closest stores to you</Text>
 				<View style={styles.container}>
-					<ScrollView showsVerticalScrollIndicator={false} style={{padding: 0, margin: 0}}>
+				<Text style={styles.title}>Closest stores to you</Text>
+					<ScrollView showsVerticalScrollIndicator={false} style={{padding: 0, marginTop: "7%"}}>
 						{
 							this.state.contents.map((item, index) => (
 								<TouchableOpacity
@@ -74,40 +74,40 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 30,
 		fontWeight: "bold",
-		color: "#7e84f3",
-		top: "7%",
+		color: "#fff",
+		top: "3%",
 		textAlign: "center",
 	},
 	container: {
-		backgroundColor: '#66c1e0',
+		backgroundColor: '#7999ed',
 		paddingTop: 0,
 		paddingHorizontal: 20,
 		paddingBottom: 0,
 		borderRadius: 20,
 		marginHorizontal: "5%",
-		marginTop: "20%",
-		height: "80%",
+		marginTop: "15%",
+		height: "90%",
   	},
   	storeButton: {
   		marginTop: 27,
   		height: 100,
-  		backgroundColor: "#7e84f3",
+  		backgroundColor: "#fff",
   		borderRadius: 25,
   		flexDirection: "column",
   		justifyContent: "space-evenly"
   	},
   	storeNameText: {
-  		color: "#fff",
+  		color: "#7e84f3",
   		left: "6%",
   		fontSize: 20
   	},
   	addressText: {
-  		color: "#fff",
+  		color: "#7e84f3",
   		left: "6%",
   		fontSize: 15
   	},
   	distanceText: {
-  		color: "#fff",
+  		color: "#7e84f3",
   		left: "6%",
   	},
 });

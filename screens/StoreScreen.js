@@ -60,7 +60,7 @@ export default class StoreScreen extends React.Component {
 							this.state.contents.inventory.map((item, index) => (
 								<TouchableOpacity style={styles.itemContainer}>
 									<Text style={styles.itemLeft}>{item.item_name}</Text>
-									<Text style={styles.itemRight}>{item.approximate_quantity} units</Text>
+									<Text style={styles.itemRight}>~ {item.approximate_quantity.toFixed(0)} units</Text>
 								</TouchableOpacity>
 							))
 						}
@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
 	},
 	inventoryDescription: {
 		color: "#fff",
-		marginTop: 3,
+		marginTop: 0,
+		marginBottom: 5,
 	},
 	name: {
 		color: "#fff",
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
 	},
 	itemContainer: {
 		backgroundColor: "#fff",
-		marginTop: 6,
+		marginTop: 10,
 		borderRadius: 15,
 		height: 45,
 		flexDirection: "row",

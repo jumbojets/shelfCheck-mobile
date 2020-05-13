@@ -3,7 +3,7 @@ import { Alert } from 'react-native'
 
 import CommonAPI from './CommonAPI.js';
 
-const FUNCTION = 'get-closest-stores'
+const FUNCTION = 'get-closest-stores';
 
 const GetClosestStores = ({longitude, latitude}) => {
 	const contents = {
@@ -20,8 +20,8 @@ const GetClosestStores = ({longitude, latitude}) => {
 
 	const onError = (c) => {
 		Alert.alert("Error", "There was a problem sending data to the server");
+		console.log(c);
 	};
-
 
 	return CommonAPI({
 		fn: FUNCTION,

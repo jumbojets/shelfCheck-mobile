@@ -1,12 +1,29 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert, Modal } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import { MonoText } from '../components/StyledText';
 
-export default function HomeScreen() {
+import AddDataScreen from './AddDataScreen';
+
+const Stack = createStackNavigator();
+
+export default function HomePage() {
+  return (
+    <NavigationContainer independent={true}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="MainScreen" component={HomePageScreen} />
+        <Stack.Screen name="AddDataScreen" component={AddDataScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+export function HomePageScreen({ navigation }) {
   return (
       <View style={styles.container}>
       <ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
@@ -49,7 +66,7 @@ export default function HomeScreen() {
           </View>
 
           <TouchableOpacity
-            onPress = {() => { Alert.alert("add inventory data button triggered. this is a placeholder") }}
+            onPress={() => navigation.navigate('AddDataScreen')}
             style = {styles.addDataButtonContainer}
           >
 

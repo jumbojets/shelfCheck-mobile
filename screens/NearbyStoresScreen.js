@@ -79,35 +79,36 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 	},
 	container: {
-		backgroundColor: '#7999ed',
+		backgroundColor: '#7256f3',
 		paddingTop: 0,
 		paddingHorizontal: 20,
 		paddingBottom: 0,
 		borderRadius: 20,
-		marginHorizontal: "5%",
+		marginHorizontal: "2%",
 		marginTop: "15%",
 		height: "90%",
   	},
   	storeButton: {
-  		marginTop: 27,
+  		marginTop: 15,
   		height: 100,
   		backgroundColor: "#fff",
-  		borderRadius: 25,
+  		borderRadius: 35,
   		flexDirection: "column",
   		justifyContent: "space-evenly"
   	},
   	storeNameText: {
-  		color: "#7e84f3",
-  		left: "6%",
-  		fontSize: 20
+  		color: "#2890AC",
+  		fontWeight: "bold",
+  		left: "9%",
+  		fontSize: 18
   	},
   	addressText: {
-  		color: "#7e84f3",
-  		left: "6%",
+  		color: "#29C7C7",
+  		left: "9%",
   		fontSize: 15
   	},
   	distanceText: {
-  		color: "#7e84f3",
-  		left: "6%",
+  		color: "#29C7C7",
+  		left: "9%",
   	},
 });

@@ -86,17 +86,17 @@ export function HomePageScreen({ navigation }) {
 
             <View style={{width:"100%", height: "32%", backgroundColor:"white", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Nutrition"); setModalColor("#7256f3")}} style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7256f3"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Nutrition"); setModalColor("#7256f3")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7256f3"}} />
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Health"); setModalColor("#7999ed")}} style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7999ed"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Health"); setModalColor("#7999ed")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7999ed"}} />
 
             </View>
 
             <View style={{width:"100%", height: "32%", backgroundColor:"white", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Cleaning"); setModalColor("#7b85f4")}} style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#7b85f4", alignItems: "center", flexDirection: "column", justifyContent: "space-evenly"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Cleaning"); setModalColor("#7b85f4")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7b85f4", alignItems: "center", flexDirection: "column", justifyContent: "space-evenly"}} />
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Power"); setModalColor("#6048d9")}} style={{height: "100%", width: "42%", borderRadius: "90", backgroundColor: "#6048d9"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Power"); setModalColor("#6048d9")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#6048d9"}} />
 
             </View>
 
@@ -138,14 +138,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: "90%",
     height: "80%",
-    borderRadius: 30,
+    borderRadius: 40,
     justifyContent: "space-evenly"
   },
   addDataButtonContainer: {
-    width: "85%",
+    width: "90%",
     height: "10%",
     backgroundColor: "#fff",
-    borderRadius: 25,
+    borderRadius: 60,
   },
   modalTitleContainer: {
     flexDirection: "row",

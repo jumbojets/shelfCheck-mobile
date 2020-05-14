@@ -95,7 +95,7 @@ export function HomePageScreen({ navigation }) {
 
             <Text style={styles.questionText}>What would you{"\n"}like to find?</Text>
 
-            <View style={{width:"100%", height: "32%", backgroundColor:"white", flexDirection: "row", justifyContent: "space-evenly"}}>
+            <View style={{width:"100%", height: "32%", flexDirection: "row", justifyContent: "space-evenly"}}>
 
               <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Nutrition"); setModalColor("#7256f3")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7256f3"}} />
 
@@ -103,7 +103,7 @@ export function HomePageScreen({ navigation }) {
 
             </View>
 
-            <View style={{width:"100%", height: "32%", backgroundColor:"white", flexDirection: "row", justifyContent: "space-evenly"}}>
+            <View style={{width:"100%", height: "32%", flexDirection: "row", justifyContent: "space-evenly"}}>
 
               <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Cleaning"); setModalColor("#7b85f4")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7b85f4", alignItems: "center", flexDirection: "column", justifyContent: "space-evenly"}} />
 
@@ -120,7 +120,7 @@ export function HomePageScreen({ navigation }) {
 
             <LinearGradient
               colors = {['#74d3dc', "#7e84f3"]}
-              style={{width: "100%", height: "100%", justifyContent: "space-around", borderRadius: 30}}
+              style={{width: "100%", height: "100%", justifyContent: "space-around", borderRadius: Dimensions.get("window").width * 0.06}}
               start = {[0, 0.5]}
               end = {[1, 0.5]}
             >
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "10%",
     backgroundColor: "#fff",
-    borderRadius: 60,
+    borderRadius: Dimensions.get("window").width * 0.1,
   },
   modalTitleContainer: {
     flexDirection: "row",
@@ -200,10 +200,10 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     alignItems: 'center',
     marginTop: "20%",
-    marginBottom: 20,
+    marginBottom: "3%",
   },
   welcomeImage: {
-    width: 300,
+    width: "75%",
     height: 100,
     resizeMode: 'contain',
     marginTop: 3,

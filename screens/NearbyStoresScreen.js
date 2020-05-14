@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -38,29 +38,31 @@ export class NearbyStoresScreen extends React.Component {
 		const { navigation } = this.props;
 		return (
 			<View style={styles.main}>
-				<View style={styles.container}>
-				<Text style={styles.title}>Closest stores to you</Text>
-					<ScrollView showsVerticalScrollIndicator={false} style={{padding: 0, marginTop: "7%"}}>
-						{
-							this.state.contents.map((item, index) => (
-								<TouchableOpacity
-									onPress={() =>
-										navigation.push('StoreScreen', {
-											store_id: item._id
-										})
-									}
-									key={item._id}
-									style={styles.storeButton}
-								>
-									<Text style={styles.storeNameText}>{item.name}</Text>
-									<Text style={styles.addressText}>{item.address}</Text>
-									<Text style={styles.distanceText}>{item.distance.toFixed(1)} miles away</Text>
-								</TouchableOpacity>
-							))
-						}
+				<ImageBackground source={require('../assets/images/background-2.png')} style={{width: '100%', height: '100%'}}>
+					<View style={styles.container}>
+						<Text style={styles.title}>Closest stores to you</Text>
+						<ScrollView showsVerticalScrollIndicator={false} style={{padding: 0, marginTop: "7%"}}>
+							{
+								this.state.contents.map((item, index) => (
+									<TouchableOpacity
+										onPress={() =>
+											navigation.push('StoreScreen', {
+												store_id: item._id
+											})
+										}
+										key={item._id}
+										style={styles.storeButton}
+									>
+										<Text style={styles.storeNameText}>{item.name}</Text>
+										<Text style={styles.addressText}>{item.address}</Text>
+										<Text style={styles.distanceText}>{item.distance.toFixed(1)} miles away</Text>
+									</TouchableOpacity>
+								))
+							}
 
-					</ScrollView>
-				</View>
+						</ScrollView>
+					</View>
+				</ImageBackground>
 			</View>
 		)
 	}

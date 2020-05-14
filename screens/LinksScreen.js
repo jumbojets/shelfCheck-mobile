@@ -1,39 +1,41 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, Text, View, Linking } from 'react-native';
+import { StyleSheet, Text, View, Linking, ImageBackground } from 'react-native';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
 
 export default function LinksScreen() {
   return (
     <View style={styles.main}>
-      <Text style={styles.title}>More info</Text>
-      <View style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <OptionButton
-          icon="md-compass"
-          label="Visit our website"
-          onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
-        />
+      <ImageBackground source={require('../assets/images/background-2.png')} style={{width: '100%', height: '100%'}}>
+        <View style={styles.container} contentContainerStyle={styles.contentContainer}>
+          <Text style={styles.title}>More info</Text>
+          <OptionButton
+            icon="md-compass"
+            label="Visit our website"
+            onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
+          />
 
-        <OptionButton
-          icon="ios-people"
-          label="Learn more about us"
-          onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
-        />
+          <OptionButton
+            icon="ios-people"
+            label="Learn more about us"
+            onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
+          />
 
-        <OptionButton
-          icon="md-at"
-          label="Contact us"
-          onPress={() => Linking.openURL('mailto:contact.shelfcheck@gmail.com')}
-        />
+          <OptionButton
+            icon="md-at"
+            label="Contact us"
+            onPress={() => Linking.openURL('mailto:contact.shelfcheck@gmail.com')}
+          />
 
-        <OptionButton
-          icon="md-cafe"
-          label="Buy us a coffee"
-          onPress={() => Linking.openURL('https://www.shelfcheck.io/buyacoffee')}
-          isLastOption
-        />
-      </View>
+          <OptionButton
+            icon="md-cafe"
+            label="Buy us a coffee"
+            onPress={() => Linking.openURL('https://www.shelfcheck.io/buyacoffee')}
+            isLastOption
+          />
+        </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -59,15 +61,18 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   container: {
-    backgroundColor: '#fafafa',
-    top: "10%"
+    top: "10%",
+    paddingVertical: "5%",
+    backgroundColor: "#7256f3",
+    borderRadius: 25,
+    marginHorizontal: "5%"
   },
   title: {
     fontSize: 30,
     fontWeight: "bold",
-    color: "#7e84f3",
-    top: "7%",
+    color: "#fff",
     textAlign: "center",
+    marginBottom: 10,
   },
   contentContainer: {
     paddingTop: 15,
@@ -76,12 +81,13 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   option: {
+    marginHorizontal: "5%",
+    marginVertical: "3%",
     backgroundColor: '#fdfdfd',
     paddingHorizontal: 15,
     paddingVertical: 15,
-    borderWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: 0,
-    borderColor: '#ededed',
+    borderRadius: 25,
   },
   lastOption: {
     borderBottomWidth: StyleSheet.hairlineWidth,

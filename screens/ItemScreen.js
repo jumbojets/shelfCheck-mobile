@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, StyleSheet, View, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, AsyncStorage, Alert, ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -77,7 +77,9 @@ export default class ItemScreen extends React.Component {
 		const { navigation } = this.props;
 
 		return (
-			<View style={styles.main}>
+			<View style={{flex: 1}}>
+				<ImageBackground source={require('../assets/images/background-2.png')} style={{width: '100%', height: '100%'}}>
+				<View style={styles.main}>
 				<View style={styles.container}>
 					<View style={styles.titleContainer}>
 						<Text style={styles.titleText}>{this.state.item_name}</Text>
@@ -136,7 +138,8 @@ export default class ItemScreen extends React.Component {
 
 
 				</View>
-
+				</View>
+				</ImageBackground>
 			</View>
 		)
 	}
@@ -146,7 +149,6 @@ const styles = StyleSheet.create({
 	main: {
 		flex: 1,
 		flexDirection: "column",
-		backgroundColor: "#fff",
 		alignItems: "center",
 	},
 	container: {

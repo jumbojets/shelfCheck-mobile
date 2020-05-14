@@ -53,7 +53,6 @@ export function HomePageScreen({ navigation }) {
 
         <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)} animationIn="slideInLeft" backdropOpacity={0.55}>
           <View style={{
-            marginTop: "16%",
             backgroundColor:"white",
             width: Dimensions.get("window").width*0.90,
             borderRadius: 30,

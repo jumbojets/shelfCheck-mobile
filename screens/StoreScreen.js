@@ -2,14 +2,14 @@ import { Text, StyleSheet, View, TouchableOpacity, Alert, Dimensions, ImageBackg
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
+import Modal from 'react-native-modal';
 
 import { MonoText } from '../components/StyledText';
-
 import GetStoreData from '../api/GetStoreData';
 import GetCurrentLocation from '../api/GetCurrentLocation';
 
 export default class StoreScreen extends React.Component {
-	state = {contents: {}, loading: true}
+	state = {contents: {}, loading: true, modalVisible: false, modalItemIndex: 0, clicked_item_name: ""}
 
 	async componentDidMount() {
 		const { route } = this.props;
@@ -19,22 +19,76 @@ export default class StoreScreen extends React.Component {
 
 		var c = await GetStoreData({store_id: store_id, latitude: latitude, longitude: longitude});
 
-		this.state.contents = {};
 		this.setState({ contents: c});
 		this.setState({ loading: false});
+		this.setState({ clicked_item_name: "item_name"})
 	}
+
+	cleanInventoryOpen = () => {
+		this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.reverse();
+		this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.slice(0, 6);
+	}
+
+	cleanInventoryClose = () => {
+		this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.reverse();
+	}
+
 
 	render() {
 		const { navigation } = this.props;
 		try {
 			this.state.contents.distance = this.state.contents.distance.toFixed(1);
-		} catch {
+		} catch (error) {
 
 		}
 		return (
+
 			<View style={styles.main}>
 				<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
 					<View style={styles.main}>
+
+						<Modal isVisible={this.state.modalVisible} onBackdropPress={() => {this.setState({modalVisible: false}); this.cleanInventoryClose()}} animationIn="slideInLeft" backdropOpacity={0.55}>
+
+							{
+								this.state.loading === false && this.state.contents.inventory.length !== 0 ?
+
+								<View style={styles.modalContainer}>
+
+									<View>
+									{
+										this.state.contents.inventory.length !== 0 ?
+
+										<View style={styles.modalTitleContainer}>
+											<Text style={styles.modalTitle}>{this.state.clicked_item_name}</Text>
+
+							            	<TouchableOpacity style={styles.modalBackButton} onPress={() => {this.setState({modalVisible: false}); this.cleanInventoryClose()} }>
+							            		<Icon name="remove" size={30} color={"#fff"} />
+							            	</TouchableOpacity>
+							            </View>
+
+						            	:
+
+						            	<View />
+
+						            }
+
+						            </View>
+						            {
+						            	this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.map((item, index) => (
+											<View key={index} style={styles.modalButton}>
+												<Text style={styles.modalText}>{item.quantity} units</Text>
+												<Text style={styles.modalText}>{item.recency.toFixed(0)} min ago</Text>
+											</View>
+										))
+						            }
+
+					            </View>
+
+					            :
+					            <View />
+					    }
+						</Modal>
+
 						<View style={styles.container}>
 							<View style={styles.nameContainer}>
 								<Text style={styles.name}>{this.state.contents.name}</Text>
@@ -53,15 +107,19 @@ export default class StoreScreen extends React.Component {
 							<View style={styles.inventory}>
 								<Text style={styles.title}>Inventory</Text>
 								<Text style={styles.inventoryDescription}>According to user reports, these are estimated quantities of items left.</Text>
-								<Text style={styles.inventoryDescription}>Click on an item for more information.</Text>
+								<Text style={styles.inventoryDescription}>Click on an item for specific information.</Text>
 								<ScrollView>
 								{
 									this.state.contents.numberOfItems === 0 || this.state.loading ?
 
 									<Text style={{color: "#fff", fontSize: 20}}>No reports of items in stock.</Text>
 									:
+
 									this.state.contents.inventory.map((item, index) => (
-										<TouchableOpacity key={index} style={styles.itemContainer}>
+										<TouchableOpacity
+											key={index}
+											style={styles.itemContainer}
+											onPress={() => {this.setState({modalVisible: true}); this.setState({modalItemIndex: index}); this.cleanInventoryOpen(); this.setState({clicked_item_name: item.item_name})}} >
 											<Text style={styles.itemLeft}>{item.item_name}</Text>
 											<Text style={styles.itemRight}>~ {item.approximate_quantity.toFixed(0)} units</Text>
 										</TouchableOpacity>
@@ -161,5 +219,47 @@ const styles = StyleSheet.create({
 		fontSize: 17,
 		fontWeight: "bold",
 		paddingRight: "6%",
-	}
+	},
+	modalContainer: {
+		backgroundColor:"white",
+		width: Dimensions.get("window").width*0.90,
+		borderRadius: 30,
+		backgroundColor: "#7b85f4",
+		padding: "5%",
+    },
+    modalTitleContainer: {
+	    flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		marginBottom: 15,
+	},
+	modalTitle: {
+		fontWeight: "bold",
+		fontSize: 30,
+		color: "#fff",
+	},
+	modalButton: {
+		width: "100%",
+		backgroundColor: "#fff3",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-around",
+		height: 60,
+		marginVertical: 5,
+		borderRadius: 25,
+	},
+	modalBackButton: {
+		height: 40,
+		width: 40,
+		borderRadius: 25,
+		backgroundColor: "#66c1e0",
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: "center",
+	},
+	modalText: {
+		color: "#fff",
+		fontSize: 18,
+		fontWeight: "bold",
+	},
 });

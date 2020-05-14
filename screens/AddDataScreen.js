@@ -164,14 +164,13 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		width: "90%",
-		height: "80%",
+		height: "90%",
 		backgroundColor: "#7e84f3",
 		borderRadius: 20,
 		padding: "5%",
 		marginTop: "20%",
 		marginBottom: "10%",
 		flexDirection: "column",
-		flex: 1,
 		justifyContent: "space-between",
 	},
 	backbutton: {

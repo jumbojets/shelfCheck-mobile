@@ -12,7 +12,8 @@ import AppendCrowdsourcedData from '../api/AppendCrowdsourcedData';
 
 import { Select, SelectItem, Toggle, Input } from '@ui-kitten/components';
 
-var items = ["Bread", "Toilet Paper"];
+var items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant Wipes', 'Eggs', 'Flashlights', 'Garbage Bags',
+		     'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
 
 export default class AddDataScreen extends React.Component {
 	state = {contents: [], loading: true, 
@@ -105,8 +106,13 @@ export default class AddDataScreen extends React.Component {
 										this.setState({selectedItem: items[index - 1]});
 									}} >
 
-									<SelectItem title="Bread" />
-									<SelectItem title="Toilet Paper" />
+
+									{
+										items.map((item, index) => (
+											<SelectItem key={index} title={item} />
+										))
+									}
+
 								</Select>
 
 							</View>

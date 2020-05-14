@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		fontWeight: "bold",
 		color: "#fff",
-		top: "3%",
+		top: "3.5%",
 		textAlign: "center",
 	},
 	container: {
@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
 		paddingTop: 0,
 		paddingHorizontal: 20,
 		paddingBottom: 0,
-		borderRadius: 20,
-		marginHorizontal: "2%",
+		borderRadius: 30,
+		marginHorizontal: "5%",
 		marginTop: "15%",
 		height: "90%",
   	},
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   		marginTop: 15,
   		height: 100,
   		backgroundColor: "#fff",
-  		borderRadius: 35,
+  		borderRadius: 25,
   		flexDirection: "column",
   		justifyContent: "space-evenly"
   	},

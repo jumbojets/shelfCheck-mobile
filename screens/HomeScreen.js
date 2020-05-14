@@ -11,6 +11,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { MonoText } from '../components/StyledText';
 
 import AddDataScreen from './AddDataScreen';
+import ItemScreen from './ItemScreen';
+import StoreScreen from './StoreScreen';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +22,8 @@ export default function HomePage() {
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="MainScreen" component={HomePageScreen} />
         <Stack.Screen name="AddDataScreen" component={AddDataScreen} />
+        <Stack.Screen name="ItemScreen" component={ItemScreen} />
+        <Stack.Screen name="StoreScreen" component={StoreScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -68,7 +72,14 @@ export function HomePageScreen({ navigation }) {
             {
 
               itemsByCategory[itemCategory].map((item, index) => (
-                <TouchableOpacity key={index} style={styles.modalButton}>
+                <TouchableOpacity key={index} style={styles.modalButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    navigation.push('ItemScreen', {
+                      item_name: item
+                    })
+                  }}
+                  >
                   <Text style={styles.modalButtonText}>{item}</Text>
                 </TouchableOpacity>
 
@@ -109,7 +120,7 @@ export function HomePageScreen({ navigation }) {
 
             <LinearGradient
               colors = {['#74d3dc', "#7e84f3"]}
-              style={{width: "100%", height: "100%", justifyContent: "space-around", borderRadius: 25}}
+              style={{width: "100%", height: "100%", justifyContent: "space-around", borderRadius: 30}}
               start = {[0, 0.5]}
               end = {[1, 0.5]}
             >
@@ -200,7 +211,6 @@ const styles = StyleSheet.create({
   },
   modalBackButton: {
     height: 40,
-    // marginBottom: 5,
     width: 40,
     borderRadius: 25,
     backgroundColor: "#66c1e0",

@@ -1,14 +1,12 @@
-import { Text, StyleSheet, View, TouchableOpacity, Alert } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
 
-
-import { Dimensions } from 'react-native';
-
 import { MonoText } from '../components/StyledText';
 
 import GetStoreData from '../api/GetStoreData';
+import GetCurrentLocation from '../api/GetCurrentLocation';
 
 export default class StoreScreen extends React.Component {
 	state = {contents: {}, loading: true}
@@ -17,8 +15,7 @@ export default class StoreScreen extends React.Component {
 		const { route } = this.props;
 		const { store_id } = route.params;
 
-		const latitude = 35.82;
-		const longitude = -78.77;
+		const { latitude, longitude } = await GetCurrentLocation();
 
 		var c = await GetStoreData({store_id: store_id, latitude: latitude, longitude: longitude});
 
@@ -30,7 +27,7 @@ export default class StoreScreen extends React.Component {
 	render() {
 		const { navigation } = this.props;
 		try {
-			this.state.contents.distance = this.state.contents.distance.toFixed(2);
+			this.state.contents.distance = this.state.contents.distance.toFixed(1);
 		} catch {
 
 		}

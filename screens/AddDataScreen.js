@@ -9,6 +9,7 @@ import { Dimensions } from 'react-native';
 import { MonoText } from '../components/StyledText';
 import GetClosestStores from '../api/GetClosestStores';
 import AppendCrowdsourcedData from '../api/AppendCrowdsourcedData';
+import GetCurrentLocation from '../api/GetCurrentLocation';
 
 import { Select, SelectItem, Toggle, Input } from '@ui-kitten/components';
 
@@ -30,8 +31,7 @@ export default class AddDataScreen extends React.Component {
 	}
 
 	async componentDidMount() {
-		const latitude = 35.82;
-		const longitude = -78.77;
+		const { latitude, longitude } = await GetCurrentLocation();
 
 		var c = await GetClosestStores({latitude: latitude, longitude: longitude});
 		this.setState({ contents: c });
@@ -86,7 +86,7 @@ export default class AddDataScreen extends React.Component {
 
 									{
 										this.state.contents.map((item, index) => (
-											<SelectItem key={index} title={item.name + " | " + item.distance.toFixed(2) + " miles"} />
+											<SelectItem key={index} title={item.name + " | " + item.distance.toFixed(1) + " miles"} />
 										))
 									}
 

@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 
 import GetClosestStoresSingleItem from '../api/GetClosestStoresSingleItem';
+import GetCurrentLocation from '../api/GetCurrentLocation';
 
 export default class ItemScreen extends React.Component {
 	state = { contents: "none", loading: true, item_name: "", addedToList: false };
@@ -23,8 +24,7 @@ export default class ItemScreen extends React.Component {
 			Alert.alert("Error", "Unable to get item on list state");
 		}
 
-		const latitude = 35.82;
-		const longitude = -78.77;
+		const { latitude, longitude } = await GetCurrentLocation();
 
 		var c = await GetClosestStoresSingleItem({item_name: item_name, latitude: latitude, longitude: longitude});
 

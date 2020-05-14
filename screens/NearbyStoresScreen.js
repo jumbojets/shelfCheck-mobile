@@ -8,6 +8,7 @@ import StoreScreen from './StoreScreen'
 import { MonoText } from '../components/StyledText';
 
 import GetClosestStores from '../api/GetClosestStores';
+import GetCurrentLocation from '../api/GetCurrentLocation';
 
 const Stack = createStackNavigator();
 
@@ -26,8 +27,7 @@ export class NearbyStoresScreen extends React.Component {
 	state = {contents: [], loading: true};
 
 	async componentDidMount() {
-		const latitude = 35.82;
-		const longitude = -78.77;
+		const { latitude, longitude } = await GetCurrentLocation();
 
 		var c = await GetClosestStores({latitude: latitude, longitude: longitude});
 		this.setState({ contents: c });
@@ -54,7 +54,7 @@ export class NearbyStoresScreen extends React.Component {
 								>
 									<Text style={styles.storeNameText}>{item.name}</Text>
 									<Text style={styles.addressText}>{item.address}</Text>
-									<Text style={styles.distanceText}>{item.distance.toFixed(2)} miles away</Text>
+									<Text style={styles.distanceText}>{item.distance.toFixed(1)} miles away</Text>
 								</TouchableOpacity>
 							))
 						}

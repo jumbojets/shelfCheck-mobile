@@ -1,29 +1,76 @@
 import * as React from 'react';
-import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 
 import GetClosestStoresSingleItem from '../api/GetClosestStoresSingleItem';
 
 export default class ItemScreen extends React.Component {
-	state = { contents: [], loading: true, item_name: "", addedToList: false };
+	state = { contents: "none", loading: true, item_name: "", addedToList: false };
 
 	async componentDidMount() {
 		const { item_name } = this.props.route.params;
 
 		this.setState({item_name: item_name});
 
+		try {
+			const value = await AsyncStorage.getItem(item_name);
+
+			if (value === "true") {
+				this.setState({addedToList: true});
+			}
+		} catch (error) {
+			Alert.alert("Error", "Unable to get item on list state");
+		}
+
 		const latitude = 35.82;
 		const longitude = -78.77;
 
-		const c = await GetClosestStoresSingleItem({item_name: item_name, latitude: latitude, longitude: longitude});
+		var c = await GetClosestStoresSingleItem({item_name: item_name, latitude: latitude, longitude: longitude});
+
+		if (c !== "none") {
+			c.forEach((item, index) => {
+				if (item.name.length > 20) {
+					c[index].name = item.name.slice(0, 17) + "...";
+				}
+			});
+		}
 
 		this.setState({ contents: c });
 		this.setState({ loading: false });
+
 	}
 
-	toggleItem = () => {
-		this.setState({ addedToList : !this.state.addedToList });
+	toggleItem = async () => {
+		try {
+
+			if (! this.state.addedToList) {
+				await AsyncStorage.setItem(this.state.item_name, "true");
+			} else {
+				await AsyncStorage.removeItem(this.state.item_name);
+			}
+
+			this.setState({ addedToList : !this.state.addedToList });
+
+		} catch (error) {
+			Alert.alert("Error", "Unable to add the item." + error)
+		}
+
+	};
+
+	makeBlankItems = () => {
+
+		const blankItemsCount = 5 - this.state.contents.length;
+		var blankItems = [];
+
+		for (var i = 0; i < blankItemsCount; i++) {
+			blankItems.push(
+				<View key={i} style={styles.blankStoreButton} />
+			);
+		}
+
+		return blankItems;
+		
 	};
 
 	render() {
@@ -51,37 +98,42 @@ export default class ItemScreen extends React.Component {
 					</TouchableOpacity>
 
 
-					<View style={styles.storesContainer}>
-						{
-							this.state.contents.map((item, index) => (
-								<TouchableOpacity
-									style={styles.storeButton}
-									key={item._id}
-									onPress={() =>
-										navigation.push('StoreScreen', {
-											store_id: item._id
-										})
-									}>
+					
+					{
+						this.state.contents !== "none" ?
+						<View style={styles.storesContainer}>
+							{
+								this.state.contents.map((item, index) => (
+									
+									<TouchableOpacity
+										style={styles.storeButton}
+										key={item._id}
+										onPress={() =>
+											navigation.push('StoreScreen', {
+												store_id: item._id
+											})
+										}>
 
-								<View style={styles.rowContainer}>
-									<Text style={styles.topRowText}>{item.name}</Text>
-									<Text style={styles.topRowText}>~ {item.approximate_quantity.toFixed(0)} units</Text>
-								</View>
+										<View style={styles.rowContainer}>
+											<Text style={styles.topRowText}>{item.name}</Text>
+											<Text style={styles.topRowText}>~ {item.approximate_quantity.toFixed(0)} units</Text>
+										</View>
 
-								<View style={styles.rowContainer}>
-									<Text style={styles.bottomRowText}>0.6 miles away</Text>
-									<Text style={styles.bottomRowText}>14 min ago</Text>
-								</View>
+										<View style={styles.rowContainer}>
+											<Text style={styles.bottomRowText}>{item.distance.toFixed(1)} miles away</Text>
+											<Text style={styles.bottomRowText}>{item.recency.toFixed(0)} min ago</Text>
+										</View>
 
-								</TouchableOpacity>
+									</TouchableOpacity>
 
-							))
-						}
+								))
+							}
+							{ this.makeBlankItems() }
+						</View>
+						:
+						<Text style={styles.nothingText}>No reports at any stores nearby</Text>
+					}
 
-
-						
-
-					</View>
 
 				</View>
 
@@ -173,6 +225,11 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		justifyContent: "space-around",
 	},
+	blankStoreButton: {
+		height: "16%",
+		width: "100%",
+		backgroundColor: "#0000",
+	},
 	rowContainer: {
 		flexDirection: "row",
 		alignItems: "center",
@@ -186,6 +243,12 @@ const styles = StyleSheet.create({
 	bottomRowText: {
 		color: "#4cd6de",
 		fontSize: 15,
+		fontWeight: "bold",
+	},
+	nothingText: {
+		paddingTop: "7%",
+		color: "#fff",
+		fontSize: 20,
 		fontWeight: "bold",
 	},
 });

@@ -7,6 +7,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons'; 
+import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; 
 
 import { MonoText } from '../components/StyledText';
 
@@ -99,19 +103,29 @@ export function HomePageScreen({ navigation }) {
 
             <View style={{width:"100%", height: "32%", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Nutrition"); setModalColor("#7256f3")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7256f3"}}>
-
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Nutrition"); setModalColor("#7256f3")}} style={[styles.categoryButton, {backgroundColor: "#7256f3"}]}>
+                <MaterialCommunityIcons name="food-apple" size={74} color="#fff" />
+                <Text style={styles.categoryText}>Nutrition</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Health"); setModalColor("#7999ed")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7999ed"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Health"); setModalColor("#7999ed")}} style={[styles.categoryButton, {backgroundColor: "#7999ed"}]}>
+                <MaterialIcons name="local-hospital" size={82} color="#fff" />
+                <Text style={styles.categoryText}>Health</Text>
+              </TouchableOpacity>
 
             </View>
 
-            <View style={{width:"100%", height: "32%", flexDirection: "row", justifyContent: "space-evenly"}}>
+            <View style={{width:"100%", height: "30%", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Cleaning"); setModalColor("#7b85f4")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7b85f4", alignItems: "center", flexDirection: "column", justifyContent: "space-evenly"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Cleaning"); setModalColor("#7b85f4")}} style={[styles.categoryButton, {backgroundColor: "#7b85f4"}]}>
+                <MaterialCommunityIcons name="spray-bottle" size={74} color="#fff" />
+                <Text style={styles.categoryText}>Cleaning</Text>
+              </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Power"); setModalColor("#6048d9")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#6048d9"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Power"); setModalColor("#6048d9")}} style={[styles.categoryButton, {backgroundColor: "#6048d9"}]}>
+                <Ionicons name="ios-flashlight" size={74} color="#fff" />
+                <Text style={styles.categoryText}>Power</Text>
+              </TouchableOpacity>
 
             </View>
 
@@ -124,11 +138,13 @@ export function HomePageScreen({ navigation }) {
 
             <LinearGradient
               colors = {['#74d3dc', "#7e84f3"]}
-              style={{width: "100%", height: "100%", justifyContent: "space-around", borderRadius: Dimensions.get("window").width * 0.06}}
+              style={{width: "100%", height: "100%", justifyContent: "space-around", borderRadius: Dimensions.get("window").width * 0.06, flexDirection: "row", alignItems: "center"}}
               start = {[0, 0.5]}
               end = {[1, 0.5]}
             >
               <Text style={styles.addDataText}>Add Inventory Data</Text>
+
+              <Feather name="plus" size={43} color="#fff" />
             
             </LinearGradient>
           </TouchableOpacity>
@@ -232,7 +248,7 @@ const styles = StyleSheet.create({
   },
   welcomeContainer: {
     alignItems: 'center',
-    marginTop: "20%",
+    marginTop: "16%",
     marginBottom: "3%",
   },
   welcomeImage: {
@@ -241,6 +257,21 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginTop: 3,
     marginLeft: -10,
+  },
+  categoryButton: {
+    paddingTop: "3%",
+    paddingBottom: "15%",
+    height: "100%",
+    width: "42%",
+    borderRadius: 38,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
+  categoryText: {
+    color: "#fff",
+    fontSize: 19,
+    fontWeight: "bold",
   },
   modalBackButton: {
     height: 40,

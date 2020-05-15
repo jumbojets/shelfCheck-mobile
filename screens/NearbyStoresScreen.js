@@ -30,6 +30,18 @@ export class NearbyStoresScreen extends React.Component {
 		const { latitude, longitude } = await GetCurrentLocation();
 
 		var c = await GetClosestStores({latitude: latitude, longitude: longitude});
+
+		if (c !== "none") {
+			c.forEach((item, index) => {
+				if (item.name.length > 23) {
+					c[index].name = item.name.slice(0, 23) + "...";
+				}
+				if (item.address.length > 33) {
+					c[index].address = item.address.slice(0, 33) + "...";
+				}
+			});
+		}
+
 		this.setState({ contents: c });
 		this.setState({ loading: false });
 	}

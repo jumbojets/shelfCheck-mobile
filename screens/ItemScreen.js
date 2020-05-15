@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		borderRadius: 35,
 		paddingHorizontal: 25,
-		paddingVertical: 19,
+		paddingVertical: 13,
 		flexDirection: "column",
 		justifyContent: "space-around",
 	},

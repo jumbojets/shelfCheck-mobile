@@ -19,6 +19,17 @@ export default class StoreScreen extends React.Component {
 
 		var c = await GetStoreData({store_id: store_id, latitude: latitude, longitude: longitude});
 
+		if (c !== null) {
+			c.shownName = c.name;
+			c.shownAddress = c.address;
+			if (c.name.length > 23) {
+				c.shownName = c.shownName.slice(0, 14) + "...";
+			}
+			if (c.address.length > 35) {
+				c.shownAddress = c.shownAddress.slice(0, 33) + "...";
+			}
+		}
+
 		this.setState({ contents: c});
 		this.setState({ loading: false});
 		this.setState({ clicked_item_name: "item_name"})
@@ -91,7 +102,7 @@ export default class StoreScreen extends React.Component {
 
 						<View style={styles.container}>
 							<View style={styles.nameContainer}>
-								<Text style={styles.name}>{this.state.contents.name}</Text>
+								<Text style={styles.name}>{this.state.contents.shownName}</Text>
 								<TouchableOpacity style={styles.backbutton} onPress={() => navigation.goBack()}>
 									<Icon name="arrow-left" size={30} color={"#fff"} />
 								</TouchableOpacity>
@@ -99,7 +110,7 @@ export default class StoreScreen extends React.Component {
 							<View style={styles.storeDetails}>
 								<Text style={styles.title}>Details</Text>
 								<TouchableOpacity onPress={() => Alert.alert("this will open maps application")}>
-									<Text style={{color: "#fff", fontSize: 16}}>{this.state.contents.address}</Text>
+									<Text style={{color: "#fff", fontSize: 16}}>{this.state.contents.shownAddress}</Text>
 									<Text style={{color: "#fff", fontSize: 16}}>{this.state.contents.distance} miles away</Text>
 								</TouchableOpacity>
 							</View>
@@ -188,7 +199,7 @@ const styles = StyleSheet.create({
 		elevation: 7,
 	},
 	storeDetails: {
-		height: "30%",
+		height: "27%",
 		marginTop: "5%",
 		paddingHorizontal: "5%",
 		backgroundColor: "#9495FD",

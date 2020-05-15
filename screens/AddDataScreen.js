@@ -57,97 +57,108 @@ export default class AddDataScreen extends React.Component {
 		const { navigation } = this.props;
 		return (
 			<View style={styles.main}>
-				<LinearGradient style={styles.container}
-					colors = {['#74d3dc', "#7e84f3"]}
-					start = {[0, 0.5]}
-              		end = {[1, 0.5]}>
+				<View style={styles.container}>
+					<LinearGradient style={styles.container2}
+						colors = {['#74d3dc', "#7e84f3"]}
+						start = {[0, 0.5]}
+	              		end = {[1, 0.5]}>
 
-              		<View>
-						<TouchableOpacity style={styles.backbutton} onPress={() => navigation.goBack()}>
-							<Icon name="arrow-left" size={30} color={"#ffff"} />
+							<View>
+
+								<View style={styles.topRow}>
+
+									<Text style={styles.title}>Add Inventory Data</Text>
+
+									<TouchableOpacity style={styles.backbutton} onPress={() => navigation.goBack()}>
+										<Icon name="arrow-left" size={30} color={"#ffff"} />
+									</TouchableOpacity>
+
+								</View>
+
+								<Text style={styles.description}>Lend a hand by estimating what's in stock</Text>
+							</View>
+
+							<View style={styles.formContainer}>
+
+								<View style={styles.selectContainer}>
+
+									<Select
+										value={this.state.selectedStore}
+										placeholder="Select a store"
+										selectedIndex={this.state.selectedStoreIndex}
+										style={{ width: "95%" }}
+										onSelect={(index) => {
+											this.setState({selectedStoreIndex: index - 1});
+											this.setState({selectedStore: this.state.contents[index - 1].name})
+										}} >
+
+										{
+											this.state.contents.map((item, index) => (
+												<SelectItem key={index} title={item.name + " | " + item.distance.toFixed(1) + " miles"} />
+											))
+										}
+
+									</Select>
+
+								</View>
+
+								<View style={styles.selectContainer}>
+
+									<Select
+										placeholder="Select an item"
+										selectedIndex={this.state.selectedItemIndex}
+										value={this.state.selectedItem}
+										style={{ width: "95%" }}
+										onSelect={(index) => {
+											this.setState({selectedItemIndex: index - 1});
+											this.setState({selectedItem: items[index - 1]});
+										}} >
+
+
+										{
+											items.map((item, index) => (
+												<SelectItem key={index} title={item} />
+											))
+										}
+
+									</Select>
+
+								</View>
+
+								<View style={styles.captionedContainer}>
+
+									<Text style={styles.caption}>Is it in stock?</Text>
+
+									<Toggle checked={this.state.checked} onChange={() => this.setState({checked: !this.state.checked})} />
+
+								</View>
+
+								
+
+								<View style={styles.captionedContainer}>
+									<Text style={styles.caption}>Approximate quantity?</Text>
+									<Input
+										placeholder='--'
+										disabled={!this.state.checked}
+										value={this.state.quantity}
+										onChangeText={this.changeQuantity}
+									/>
+								</View>
+
+
+							</View>
+
+						<View style={{height:"5%"}} />
+
+
+						<TouchableOpacity style={styles.submitButton} onPress={this.submitData}>
+
+							<Text style={styles.submitText}>Submit</Text>
+
 						</TouchableOpacity>
-
-
-						<Text style={styles.title}>Add Inventory Data</Text>
-
-						<View style={styles.formContainer}>
-
-							<View style={styles.selectContainer}>
-
-								<Select
-									value={this.state.selectedStore}
-									placeholder="Select a store"
-									selectedIndex={this.state.selectedStoreIndex}
-									style={{ width: "95%" }}
-									onSelect={(index) => {
-										this.setState({selectedStoreIndex: index - 1});
-										this.setState({selectedStore: this.state.contents[index - 1].name})
-									}} >
-
-									{
-										this.state.contents.map((item, index) => (
-											<SelectItem key={index} title={item.name + " | " + item.distance.toFixed(1) + " miles"} />
-										))
-									}
-
-								</Select>
-
-							</View>
-
-							<View style={styles.selectContainer}>
-
-								<Select
-									placeholder="Select an item"
-									selectedIndex={this.state.selectedItemIndex}
-									value={this.state.selectedItem}
-									style={{ width: "95%" }}
-									onSelect={(index) => {
-										this.setState({selectedItemIndex: index - 1});
-										this.setState({selectedItem: items[index - 1]});
-									}} >
-
-
-									{
-										items.map((item, index) => (
-											<SelectItem key={index} title={item} />
-										))
-									}
-
-								</Select>
-
-							</View>
-
-							<View style={styles.captionedContainer}>
-
-								<Text style={styles.caption}>Is it in stock?</Text>
-
-								<Toggle checked={this.state.checked} onChange={() => this.setState({checked: !this.state.checked})} />
-
-							</View>
-
-							
-
-							<View style={styles.captionedContainer}>
-								<Text style={styles.caption}>Approximate Quantity?</Text>
-								<Input
-									placeholder='--'
-									disabled={!this.state.checked}
-									value={this.state.quantity}
-									onChangeText={this.changeQuantity}
-								/>
-							</View>
-
-
-						</View>
-					</View>
-
-					<TouchableOpacity style={styles.submitButton} onPress={this.submitData}>
-
-						<Text style={styles.submitText}>Submit</Text>
-
-					</TouchableOpacity>
-					
-				</LinearGradient>
+						
+					</LinearGradient>
+				</View>
 			</View>
 		)
 	}
@@ -157,44 +168,81 @@ const styles = StyleSheet.create({
 	main: {
 		flexDirection: "column",
 		backgroundColor: '#e8eff1',
-		justifyContent: "space-evenly",
+		justifyContent: "space-around",
 		alignItems: "center",
 		height: "100%",
 		width: "100%",
 	},
 	container: {
 		width: "90%",
-		height: "90%",
-		backgroundColor: "#7e84f3",
-		borderRadius: 20,
-		padding: "5%",
-		marginTop: "20%",
-		marginBottom: "10%",
+		height: "85%",
+		borderRadius: 30,
+		marginTop: "5%",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 4.65,
+		shadowOpacity: 0.29,
+		elevation: 7,
+	},
+	container2: {
+		width: "100%",
+		height: "100%",
+		borderRadius: 30,
 		flexDirection: "column",
-		justifyContent: "space-between",
+		paddingTop: "5%",
+		justifyContent: "space-around",
+		paddingHorizontal: "5%",
+	},
+	topRow: {
+		flexDirection: "row",
+		justifyContent: "space-between"
 	},
 	backbutton: {
 		height: 40,
 		width: 40,
 		borderRadius: 25,
-		backgroundColor: "#0000",
+		backgroundColor: "#fff5",
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: "center",
+		shadowColor: "#000",
+	    shadowOffset: {
+			width: 0,
+			height: 3,
+	    },
+	    shadowRadius: 3,
+	    shadowOpacity: 0.2,
+	    elevation: 7,
 	},
 	title: {
-		marginVertical: "5%",
-		fontSize: 30,
+		fontSize: 27,
 		fontWeight: "bold",
 		color: "#fff",
+		marginBottom: "5%",
+	},
+	description: {
+		color: "#fff",
+		fontSize: 20,
+		marginVertical: "0%",
 	},
 	formContainer: {
-		backgroundColor: "#fffc",
+		backgroundColor: "#fff5",
 		borderRadius: 25,
 		flexDirection: "column",
 		justifyContent: "space-evenly",
-		height: "70%",
 		paddingHorizontal: "5%",
+		height: "50%",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 4.65,
+		shadowOpacity: 0.25,
+		elevation: 7,
 	},
 	selectContainer: {
 		width: "100%",
@@ -207,24 +255,32 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		height: 60,
+		height: 40,
 		marginHorizontal: "4%",
 		borderRadius: 25,
 	},
 	caption: {
-		fontSize: 15,
-		color: "#0008",
+		fontSize: 16,
+		color: "#fff",
 	},
 	submitButton: {
 		width: "100%",
-	    height: "12%",
-	    backgroundColor: "#fffc",
+	    height: "10%",
+	    backgroundColor: "#fff5",
 	    borderRadius: 45,
 	    flexDirection: "column",
 	    justifyContent: "space-evenly",
+	    shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 4.65,
+		shadowOpacity: 0.25,
+		elevation: 7,
 	},
 	submitText: {
-		color: "#7e84f3",
+		color: "#fff",
 	    fontSize: 23,
 	    fontWeight: "bold",
 	    textAlign: "center",

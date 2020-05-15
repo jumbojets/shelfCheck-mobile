@@ -1,11 +1,11 @@
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import * as React from 'react';
 
 import Colors from '../constants/Colors';
 
 export default function TabBarIcon(props) {
   return (
-    <Ionicons
+    <FontAwesome
       name={props.name}
       size={30}
       style={{ marginBottom: -3 }}

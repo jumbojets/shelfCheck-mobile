@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
+import { FontAwesome, Octicons } from '@expo/vector-icons';
 
-import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import NearbyStoresScreen from '../screens/NearbyStoresScreen';
 import LinksScreen from '../screens/LinksScreen';
@@ -28,32 +28,32 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Home"
         component={HomeScreen}
         options={{
-          title: 'Home',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-home" />,
+          title: '',
+          tabBarIcon: ({ focused }) => <FontAwesome name="home" size={30} style={{ marginBottom: -18 }} color={focused ? Colors.tabIconSelected : Colors.tabIconDefault} />,
         }}
       />
       <BottomTab.Screen
         name="Stores"
         component={NearbyStoresScreen}
         options={{
-          title: 'Stores',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-business" />,
+          title: '',
+          tabBarIcon: ({ focused }) => <FontAwesome name="shopping-cart" size={30} style={{ marginBottom: -18 }} color={focused ? Colors.tabIconSelected : Colors.tabIconDefault} />,
         }}
       />
       <BottomTab.Screen
         name="List"
         component={YourListScreen}
         options={{
-          title: 'Your List',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-cart" />,
+          title: '',
+          tabBarIcon: ({ focused }) => <Octicons name="checklist" size={30} style={{ marginBottom: -23 }} color={focused ? Colors.tabIconSelected : Colors.tabIconDefault} />,
         }}
       />
       <BottomTab.Screen
         name="More"
         component={LinksScreen}
         options={{
-          title: 'More',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-menu" />,
+          title: '',
+          tabBarIcon: ({ focused }) => <FontAwesome name="bars" size={30} style={{ marginBottom: -18 }} color={focused ? Colors.tabIconSelected : Colors.tabIconDefault} />,
         }}
       />
     </BottomTab.Navigator>

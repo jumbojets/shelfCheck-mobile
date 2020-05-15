@@ -44,10 +44,10 @@ export default class StoreScreen extends React.Component {
 		return (
 
 			<View style={styles.main}>
-				<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
+				<ImageBackground source={require('../assets/images/background-2.png')} style={{width: '100%', height: '100%'}}>
 					<View style={styles.main}>
 
-						<Modal isVisible={this.state.modalVisible} onBackdropPress={() => {this.setState({modalVisible: false}); this.cleanInventoryClose()}} animationIn="slideInLeft" backdropOpacity={0.55}>
+						<Modal isVisible={this.state.modalVisible} onBackdropPress={() => {this.setState({modalVisible: false}); this.cleanInventoryClose()}} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
 
 							{
 								this.state.loading === false && this.state.contents.inventory.length !== 0 ?
@@ -59,7 +59,7 @@ export default class StoreScreen extends React.Component {
 										this.state.contents.inventory.length !== 0 ?
 
 										<View style={styles.modalTitleContainer}>
-											<Text style={styles.modalTitle}>{this.state.clicked_item_name}</Text>
+											<Text style={styles.modalTitle}>Most recent reports</Text>
 
 							            	<TouchableOpacity style={styles.modalBackButton} onPress={() => {this.setState({modalVisible: false}); this.cleanInventoryClose()} }>
 							            		<Icon name="remove" size={30} color={"#fff"} />
@@ -101,12 +101,10 @@ export default class StoreScreen extends React.Component {
 								<TouchableOpacity onPress={() => Alert.alert("this will open maps application")}>
 									<Text style={{color: "#fff", fontSize: 16}}>{this.state.contents.address}</Text>
 									<Text style={{color: "#fff", fontSize: 16}}>{this.state.contents.distance} miles away</Text>
-									<Text style={{color: "#fff", fontSize: 16}}>Click to Navigate</Text>
 								</TouchableOpacity>
 							</View>
 							<View style={styles.inventory}>
 								<Text style={styles.title}>Inventory</Text>
-								<Text style={styles.inventoryDescription}>According to user reports, these are estimated quantities of items left.</Text>
 								<Text style={styles.inventoryDescription}>Click on an item for specific information.</Text>
 								<ScrollView>
 								{
@@ -146,11 +144,20 @@ const styles = StyleSheet.create({
 	container: {
 		width: "90%",
 		height: "90%",
-		backgroundColor: "#7e84f3",
-		borderRadius: 20,
-		padding: "5%",
+		backgroundColor: "#7897F4",
+		borderRadius: 35,
+		paddingVertical: "8%",
+		paddingHorizontal: "5%",
 		marginTop: "20%",
 		marginBottom: "10%",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 4.65,
+		shadowOpacity: 0.29,
+		elevation: 7,
 	},
 	nameContainer: {
 		flexDirection: "row",
@@ -167,27 +174,51 @@ const styles = StyleSheet.create({
 		height: 40,
 		width: 40,
 		borderRadius: 25,
-		backgroundColor: "#66c1e0",
+		backgroundColor: "#9495FD",
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 3,
+		shadowOpacity: 0.2,
+		elevation: 7,
 	},
 	storeDetails: {
-		height: "25%",
+		height: "30%",
 		marginTop: "5%",
 		paddingHorizontal: "5%",
-		backgroundColor: "#66c1e0",
-		borderRadius: 15,
+		backgroundColor: "#9495FD",
+		borderRadius: 25,
 		flexDirection: "column",
 		justifyContent: "space-evenly",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 4.65,
+		shadowOpacity: 0.2,
+		elevation: 7,
 	},
 	inventory: {
 		marginTop: "5%",
 		height: "80%",
-		borderRadius: 15,
+		borderRadius: 25,
 		paddingHorizontal: "5%",
 		paddingTop: "5%",
-		backgroundColor: "#66c1e0",
+		backgroundColor: "#9495FD",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 4.65,
+		shadowOpacity: 0.25,
+		elevation: 7,
 	},
 	inventoryDescription: {
 		color: "#fff",
@@ -235,7 +266,7 @@ const styles = StyleSheet.create({
 	},
 	modalTitle: {
 		fontWeight: "bold",
-		fontSize: 30,
+		fontSize: 25,
 		color: "#fff",
 	},
 	modalButton: {
@@ -247,6 +278,14 @@ const styles = StyleSheet.create({
 		height: 60,
 		marginVertical: 5,
 		borderRadius: 25,
+		shadowColor: "#000",
+	    shadowOffset: {
+	      width: 0,
+	      height: 3,
+	    },
+	    shadowRadius: 3,
+	    shadowOpacity: 0.2,
+	    elevation: 7,
 	},
 	modalBackButton: {
 		height: 40,
@@ -256,6 +295,14 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 3,
+		shadowOpacity: 0.2,
+		elevation: 7,
 	},
 	modalText: {
 		color: "#fff",

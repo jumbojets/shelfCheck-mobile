@@ -51,7 +51,7 @@ export function HomePageScreen({ navigation }) {
           alignItems: "center",
         }}>
 
-        <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)} animationIn="slideInLeft" backdropOpacity={0.55}>
+        <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
           <View style={{
             backgroundColor:"white",
             width: Dimensions.get("window").width*0.90,
@@ -92,11 +92,16 @@ export function HomePageScreen({ navigation }) {
 
           <View style={styles.itemCategoryButtonsContainer}>
 
-            <Text style={styles.questionText}>What would you{"\n"}like to find?</Text>
+            <View>
+              <Text style={styles.questionText}>What would you like to find?</Text>
+              <Text style={styles.questionText2}>Select a category to begin</Text>
+            </View>
 
             <View style={{width:"100%", height: "32%", flexDirection: "row", justifyContent: "space-evenly"}}>
 
-              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Nutrition"); setModalColor("#7256f3")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7256f3"}} />
+              <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Nutrition"); setModalColor("#7256f3")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7256f3"}}>
+
+              </TouchableOpacity>
 
               <TouchableOpacity onPress={() => {setModalVisible(true); setItemCategory("Health"); setModalColor("#7999ed")}} style={{height: "100%", width: "42%", borderRadius: "40", backgroundColor: "#7999ed"}} />
 
@@ -149,13 +154,28 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "80%",
     borderRadius: 40,
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 4.65,
+    shadowOpacity: 0.22,
+    elevation: 5,
   },
   addDataButtonContainer: {
     width: "90%",
     height: "10%",
-    backgroundColor: "#fff",
-    borderRadius: Dimensions.get("window").width * 0.1,
+    backgroundColor: "#ffff",
+    borderRadius: Dimensions.get("window").width * 0.2,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowRadius: 4.7,
+    shadowOpacity: 0.3,
+    elevation: 8,
   },
   modalTitleContainer: {
     flexDirection: "row",
@@ -177,6 +197,14 @@ const styles = StyleSheet.create({
     height: 60,
     marginVertical: 5,
     borderRadius: 25,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 3,
+    shadowOpacity: 0.2,
+    elevation: 7,
   },
   modalButtonText: {
     color: "#fff",
@@ -193,7 +221,13 @@ const styles = StyleSheet.create({
   questionText: {
     color: "#6349d9",
     fontWeight: "bold",
-    fontSize: 30,
+    fontSize: 22,
+    left: "5%"
+  },
+  questionText2: {
+    color: "#6349d9",
+    fontWeight: "normal",
+    fontSize: 20,
     left: "5%"
   },
   welcomeContainer: {
@@ -202,8 +236,8 @@ const styles = StyleSheet.create({
     marginBottom: "3%",
   },
   welcomeImage: {
-    width: "75%",
-    height: 100,
+    width: "65%",
+    height: 75,
     resizeMode: 'contain',
     marginTop: 3,
     marginLeft: -10,
@@ -216,6 +250,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 3,
+    shadowOpacity: 0.2,
+    elevation: 7,
   },
 });
 

@@ -83,12 +83,20 @@ const styles = StyleSheet.create({
 	container: {
 		backgroundColor: '#7256f3',
 		paddingTop: 0,
-		paddingHorizontal: 20,
+		paddingHorizontal: 0,
 		paddingBottom: 0,
 		borderRadius: 30,
 		marginHorizontal: "5%",
 		marginTop: "15%",
 		height: "90%",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 4.65,
+		shadowOpacity: 0.29,
+		elevation: 7,
   	},
   	storeButton: {
   		marginTop: 15,
@@ -96,21 +104,29 @@ const styles = StyleSheet.create({
   		backgroundColor: "#fff",
   		borderRadius: 25,
   		flexDirection: "column",
-  		justifyContent: "space-evenly"
+  		justifyContent: "space-evenly",
+  		shadowOffset: {
+	    	width: 0,
+	    	height: 4,
+	    },
+	    shadowRadius: 4.7,
+	    shadowOpacity: 0.3,
+	    elevation: 8,
+	    marginHorizontal: 20,
   	},
   	storeNameText: {
-  		color: "#2890AC",
+  		color: "#4524AC",
   		fontWeight: "bold",
   		left: "9%",
   		fontSize: 18
   	},
   	addressText: {
-  		color: "#29C7C7",
+  		color: "#693CE1",
   		left: "9%",
   		fontSize: 15
   	},
   	distanceText: {
-  		color: "#29C7C7",
+  		color: "#693CE1",
   		left: "9%",
   	},
 });

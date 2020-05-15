@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, Text, View, Linking, ImageBackground } from 'react-native';
-import { RectButton, ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet, Text, View, Linking, ImageBackground, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function LinksScreen() {
   return (
@@ -31,8 +31,7 @@ export default function LinksScreen() {
           <OptionButton
             icon="md-cafe"
             label="Buy us a coffee"
-            onPress={() => Linking.openURL('https://www.shelfcheck.io/buyacoffee')}
-            isLastOption
+            onPress={() => Linking.openURL('https://www.shelfcheck.io/coffee')}
           />
         </View>
       </ImageBackground>
@@ -42,16 +41,16 @@ export default function LinksScreen() {
 
 function OptionButton({ icon, label, onPress, isLastOption }) {
   return (
-    <RectButton style={[styles.option, isLastOption && styles.lastOption]} onPress={onPress}>
+    <TouchableOpacity style={styles.option} onPress={onPress}>
       <View style={{ flexDirection: 'row' }}>
         <View style={styles.optionIconContainer}>
-          <Ionicons name={icon} size={22} color="rgba(0,0,0,0.35)" />
+          <Ionicons name={icon} size={22} color="#66c1e0" />
         </View>
         <View style={styles.optionTextContainer}>
           <Text style={styles.optionText}>{label}</Text>
         </View>
       </View>
-    </RectButton>
+    </TouchableOpacity>
   );
 }
 
@@ -64,8 +63,16 @@ const styles = StyleSheet.create({
     top: "10%",
     paddingVertical: "5%",
     backgroundColor: "#7256f3",
-    borderRadius: 25,
-    marginHorizontal: "5%"
+    borderRadius: 35,
+    marginHorizontal: "5%",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 4.65,
+    shadowOpacity: 0.29,
+    elevation: 7,
   },
   title: {
     fontSize: 30,
@@ -88,13 +95,20 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomWidth: 0,
     borderRadius: 25,
-  },
-  lastOption: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 3,
+    shadowOpacity: 0.20,
+    elevation: 7,
   },
   optionText: {
-    fontSize: 15,
+    fontSize: 17,
+    color: "#66c1e0", 
     alignSelf: 'flex-start',
     marginTop: 1,
+    fontWeight: "bold",
   },
 });

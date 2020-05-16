@@ -1,6 +1,7 @@
-import { Text, StyleSheet, View, TouchableOpacity, Alert, Dimensions, ImageBackground } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Alert, Dimensions, ImageBackground, Linking, Platform } from 'react-native';
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Ionicons } from '@expo/vector-icons'; 
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 
@@ -37,11 +38,23 @@ export default class StoreScreen extends React.Component {
 
 	cleanInventoryOpen = () => {
 		this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.reverse();
-		this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.slice(0, 6);
+		this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data = this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.slice(0, 7);
 	}
 
 	cleanInventoryClose = () => {
 		this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.reverse();
+	}
+
+	openMapsApp = () => {
+		const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+		const latLng = `${this.state.contents.coordinates[1]},${this.state.contents.coordinates[0]}`;
+		const label = this.state.contents.name;
+		const url = Platform.select({
+			ios: `${scheme}${label}@${latLng}`,
+			android: `${scheme}${latLng}(${label})`,
+		});
+
+		Linking.openURL(url);
 	}
 
 
@@ -108,15 +121,21 @@ export default class StoreScreen extends React.Component {
 								</TouchableOpacity>
 							</View>
 							<View style={styles.storeDetails}>
-								<Text style={styles.title}>Details</Text>
-								<TouchableOpacity onPress={() => Alert.alert("this will open maps application")}>
+								<View style={styles.detailsNavRow}>
+									<Text style={styles.title}>Details</Text>
+									<TouchableOpacity style={styles.navigateButton} onPress={() => this.openMapsApp()}>
+										<Text style={{color: "#9495FD", fontWeight: "bold"}}>Navigate</Text>
+										<Ionicons name="md-navigate" size={15} color="#9495FD" />
+									</TouchableOpacity>
+								</View>
+								<View onPress={() => Alert.alert("this will open maps application")}>
 									<Text style={{color: "#fff", fontSize: 16}}>{this.state.contents.shownAddress}</Text>
 									<Text style={{color: "#fff", fontSize: 16}}>{this.state.contents.distance} miles away</Text>
-								</TouchableOpacity>
+								</View>
 							</View>
 							<View style={styles.inventory}>
 								<Text style={styles.title}>Inventory</Text>
-								<Text style={styles.inventoryDescription}>Click on an item for specific information.</Text>
+								<Text style={styles.inventoryDescription}>Click on an item for specific information</Text>
 								<ScrollView>
 								{
 									this.state.contents.numberOfItems === 0 || this.state.loading ?
@@ -215,6 +234,30 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.2,
 		elevation: 7,
 	},
+	detailsNavRow: {
+		flexDirection: "row",
+		height: "25%",
+		width: "100%",
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+	navigateButton: {
+		backgroundColor: "#fff",
+		width: "35%",
+		paddingHorizontal: "3%",
+		height: "100%",
+		borderRadius: 15,
+		alignItems: "center",
+		flexDirection: "row",
+		justifyContent: "space-around",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 3,
+		shadowOpacity: 0.15,
+		elevation: 7,
+	},
 	inventory: {
 		marginTop: "5%",
 		height: "80%",
@@ -244,7 +287,7 @@ const styles = StyleSheet.create({
 	itemContainer: {
 		backgroundColor: "#fff",
 		marginTop: 10,
-		borderRadius: 15,
+		borderRadius: 20,
 		height: 45,
 		flexDirection: "row",
 		justifyContent: "space-between",

@@ -1,14 +1,16 @@
-import { Text, View, StyleSheet, ImageBackground, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, TouchableOpacity, Alert, AsyncStorage, Linking, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
-
 import ViewPager from '@react-native-community/viewpager';
 
 import AddDataScreen from './AddDataScreen';
+import StoreScreen from './StoreScreen';
+import GetCurrentLocation from '../api/GetCurrentLocation';
+import GetClosestStoresMultipleItems from '../api/GetClosestStoresMultipleItems';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +20,7 @@ export default function YourListPage() {
 			<Stack.Navigator screenOptions={{headerShown: false}}>
 				<Stack.Screen name="MainScreen" component={YourListScreen} />
 				<Stack.Screen name="AddDataScreen" component={AddDataScreen} />
+				<Stack.Screen name="StoreScreen" component={StoreScreen} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
@@ -27,10 +30,15 @@ const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant W
 			   'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
 
 export class YourListScreen extends React.Component {
+	state = {contents: [], userItems: [], itemStates: {}, loading: true};
 
 	clearList = () => {
 		items.forEach(async (item, index) => {
-			await AsyncStorage.removeItem(item);
+			try {
+				await AsyncStorage.removeItem(item);
+			} catch {
+				Alert.alert("Error", "We were unable to remove your items");
+			}
 		});
 	}
 
@@ -51,22 +59,71 @@ export class YourListScreen extends React.Component {
 		)
 	}
 
-	getItemList = () => {
-		var items = [];
-		items.forEach(async (item, index) => {
+	getItemListAndStates = async () => {
+		this.setState({userItems: []});
+		this.setState({itemStates: {}});
 
+		await items.forEach(async (item, index) => {
+			try {
+				const value = await AsyncStorage.getItem(item);
+				if (value !== null) {
+					this.state.userItems.push(item);
+					this.state.itemStates[item] = value;
+				}
+			} catch (error) {
+				Alert.alert("Error", "We are unable to properly retrieve your list" + error);
+			}
 		});
 	}
 
-	openMapsApp = () => {
+	openMapsApp = (lng, lat, label) => {
+		const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+		const latLng = `${lat},${lng}`;
+		const url = Platform.select({
+			ios: `${scheme}${label}@${latLng}`,
+			android: `${scheme}${latLng}(${label})`,
+		});
 
+		Linking.openURL(url);
+	}
+
+
+	submitData = (storeName, itemName) => {
+		const { navigation } = this.props;
+		return () => {
+			navigation.push('AddDataScreen', {
+				storeName: storeName,
+				itemName: itemName,
+			});
+		}
 	}
 
 	componentDidMount = async () => {
+		await this.getItemListAndStates();
+
+		const { latitude, longitude } = await GetCurrentLocation();
+
+		var c = await GetClosestStoresMultipleItems({
+			items: this.state.userItems,
+			latitude: latitude,
+			longitude: longitude,
+		});
+
+		c.forEach((item, index) => {
+			if (item.name.length > 13 + 3) {
+				c[index].name = item.name.slice(0, 13) + "...";
+			}
+		});
+
+
+		this.setState({ contents: c });
+		this.setState({ loading: false });
 
 	}
 
 	render() {
+		const { navigation } = this.props;
+
 		return (
 			<View style={{flex: 1}}>
 				<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
@@ -80,67 +137,89 @@ export class YourListScreen extends React.Component {
 							</View>
 							<Text style={styles.captionText}>Swipe through the best stores we found for the items you need</Text>
 
-							<ViewPager style={styles.viewPager} initialPage={0} showPageIndicator={true}>
+							{
+								this.state.contents.length !== 0?
+								<ViewPager style={styles.viewPager} initialPage={0} showPageIndicator={true}>
 
+								{
+									this.state.contents.map((store, index) => (
 
-								<View key="1">
-									<View style={styles.storeContainer}>
+										<View key={index}>
+											<View style={styles.storeContainer}>
 
-										<View style={styles.topRowContainer}>
+												<View style={styles.topRowContainer}>
 
-											<TouchableOpacity style={styles.storeInfoContainer}>
+													<TouchableOpacity style={styles.storeInfoContainer} onPress={() => {
+																											navigation.push('StoreScreen', {
+																												store_id: store._id
+																											})
+																										}}>
 
-												<Text style={styles.storeName}>Taylor Farm</Text>
+														<Text style={styles.storeName}>{store.name}</Text>
 
-												<Text style={styles.storeDistance}>1.4 miles away</Text>
-
-											</TouchableOpacity>
-
-											<View style={styles.percentageContainer}>
-												<Text style={styles.percentageText}><Text style={{fontWeight: "bold"}}>75%</Text><Text> of</Text></Text>
-												<Text style={styles.percentageText}>your list</Text>
-											</View>
-
-										</View>
-
-
-										<View style={styles.allItemsContainer}>
-
-											<View style={styles.itemContainer}>
-												<Text style={styles.itemName}>Bread</Text>
-
-
-												<View style={styles.unitsAddContainer}>
-													<Text style={styles.itemName}>~10 units</Text>
-
-													<TouchableOpacity style={styles.icon}>
-
-														<LinearGradient
-															style = {{height: "100%", width: "100%", borderRadius:15, flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}
-															colors = {['#74d3dc', "#7e84f3"]}
-															start = {[0, 0.5]}
-															end = {[1, 0.5]}>
-															<Feather name="plus" size={26} color="#fff" />
-														</LinearGradient>
-
+														<Text style={styles.storeDistance}>{store.distance.toFixed(1)} miles away</Text>
 
 													</TouchableOpacity>
+
+													<View style={styles.percentageContainer}>
+														<Text style={styles.percentageText}><Text style={{fontWeight: "bold"}}>{store.stock_proportion.toFixed(2) * 100}%</Text><Text> of</Text></Text>
+														<Text style={styles.percentageText}>your list</Text>
+													</View>
+
 												</View>
+
+
+												<View style={styles.allItemsContainer}>
+
+													{
+														store.approximate_quantities.map((item, index) => (
+
+															<View key={index} style={styles.itemContainer}>
+																<Text style={styles.itemName}>{item.item_name}</Text>
+
+
+																<View style={styles.unitsAddContainer}>
+																	<Text style={styles.itemName}>~{item.quantity.toFixed(0)} units</Text>
+
+																	<TouchableOpacity style={styles.icon} onPress={this.submitData(store.name, item.item_name)}>
+
+																		<LinearGradient
+																			style = {{height: "100%", width: "100%", borderRadius:15, flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}
+																			colors = {['#74d3dc', "#7e84f3"]}
+																			start = {[0, 0.5]}
+																			end = {[1, 0.5]}>
+																			<Feather name="plus" size={26} color="#fff" />
+																		</LinearGradient>
+
+																	</TouchableOpacity>
+																</View>
+															</View>
+
+														))
+													}
+
+												</View>
+
+												<View style={styles.navigateRowContainer}>
+													<TouchableOpacity style={styles.navigateButton} onPress={() => this.openMapsApp(store.coordinates[0], store.coordinates[1], store.name)}>
+														<Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 17}}>Navigate</Text>
+														<Ionicons name="md-navigate" size={17} color="#4cd6de" />
+													</TouchableOpacity>
+												</View>
+
 											</View>
-
 										</View>
 
-										<View style={styles.navigateRowContainer}>
-											<TouchableOpacity style={styles.navigateButton} onPress={() => this.openMapsApp()}>
-												<Text style={{color: "#4cd6dE", fontWeight: "bold", fontSize: 17}}>Navigate</Text>
-												<Ionicons name="md-navigate" size={17} color="#4cd6dE" />
-											</TouchableOpacity>
-										</View>
 
-									</View>
+									))
+								}
+
+								</ViewPager>
+								:
+								<View>
+									<Text style={styles.nothing}>No stores nearby with items reported on your list</Text>
 								</View>
-
-							</ViewPager>
+							}
 
 						</View>
 					</View>
@@ -260,6 +339,9 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		borderRadius: 25,
 		alignItems: "center",
+	},
+	nothing: {
+
 	},
 	percentageText: {
 		fontSize: 17,

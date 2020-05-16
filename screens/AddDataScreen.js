@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, TouchableOpacity, Alert, Picker } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Alert, Picker, AsyncStorage } from 'react-native';
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';

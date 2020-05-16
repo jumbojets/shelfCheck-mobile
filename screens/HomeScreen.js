@@ -7,10 +7,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons'; 
-import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
+
 
 import { MonoText } from '../components/StyledText';
 

@@ -17,7 +17,7 @@ export default class ItemScreen extends React.Component {
 		try {
 			const value = await AsyncStorage.getItem(item_name);
 
-			if (value === "true") {
+			if (value === "true" || value === "done") {
 				this.setState({addedToList: true});
 			}
 		} catch (error) {

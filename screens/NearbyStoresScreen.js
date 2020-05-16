@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		fontWeight: "bold",
 		color: "#fff",
-		top: "3.5%",
+		top: "5%",
 		textAlign: "center",
 	},
 	container: {

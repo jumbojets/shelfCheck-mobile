@@ -13,8 +13,8 @@ import GetCurrentLocation from '../api/GetCurrentLocation';
 
 import { Select, SelectItem, Toggle, Input } from '@ui-kitten/components';
 
-var items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant Wipes', 'Eggs', 'Flashlights', 'Garbage Bags',
-		     'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
+const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant Wipes', 'Eggs', 'Flashlights', 'Garbage Bags',
+		       'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
 
 export default class AddDataScreen extends React.Component {
 	state = {contents: [], loading: true, 

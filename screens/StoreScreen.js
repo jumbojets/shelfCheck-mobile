@@ -157,7 +157,7 @@ export default class StoreScreen extends React.Component {
 											style={styles.itemContainer}
 											onPress={() => {this.setState({modalVisible: true}); this.setState({modalItemIndex: index}); this.cleanInventoryOpen(); this.setState({clicked_item_name: item.item_name})}} >
 											<Text style={styles.itemLeft}>{item.item_name}</Text>
-											<Text style={styles.itemRight}>~ {item.approximate_quantity.toFixed(0)} units</Text>
+											<Text style={styles.itemRight}>~{item.approximate_quantity.toFixed(0)} units</Text>
 										</TouchableOpacity>
 									))
 								}

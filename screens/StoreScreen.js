@@ -14,7 +14,7 @@ export default class StoreScreen extends React.Component {
 
 	async componentDidMount() {
 		const { route } = this.props;
-		const { store_id } = route.params;
+		const { store_id, firstItem } = route.params;
 
 		const { latitude, longitude } = await GetCurrentLocation();
 
@@ -28,6 +28,14 @@ export default class StoreScreen extends React.Component {
 			}
 			if (c.address.length > 35) {
 				c.shownAddress = c.shownAddress.slice(0, 33) + "...";
+			}
+
+			if (firstItem !== null) {
+				c.inventory.forEach((item, index) => {
+					if (item.item_name === firstItem) {
+						[c.inventory[0], c.inventory[index]] = [c.inventory[index], c.inventory[0]];
+					}
+				});
 			}
 		}
 

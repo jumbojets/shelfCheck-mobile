@@ -41,6 +41,21 @@ export default class AddDataScreen extends React.Component {
 	submitData = () => {
 		const { navigation } = this.props;
 
+		if (this.state.selectedStore === "") {
+			Alert.alert("Please select a store!");
+			return;
+		}
+
+		if (this.state.selectedItem === "") {
+			Alert.alert("Please select an item!");
+			return;
+		}
+
+		if (this.state.checked && this.state.quantity === "") {
+			Alert.alert("Please enter a quantity!");
+			return;
+		}
+
 		const contents = {
 			inventory_id: this.state.contents[this.state.selectedStoreIndex].inventory_id,
 			item_name: items[this.state.selectedItemIndex],

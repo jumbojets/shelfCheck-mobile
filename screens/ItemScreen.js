@@ -112,7 +112,8 @@ export default class ItemScreen extends React.Component {
 										key={item._id}
 										onPress={() =>
 											navigation.push('StoreScreen', {
-												store_id: item._id
+												store_id: item._id,
+												firstItem: this.state.item_name,
 											})
 										}>
 

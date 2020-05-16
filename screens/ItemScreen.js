@@ -6,6 +6,9 @@ import { Ionicons } from '@expo/vector-icons';
 import GetClosestStoresSingleItem from '../api/GetClosestStoresSingleItem';
 import GetCurrentLocation from '../api/GetCurrentLocation';
 
+const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant Wipes', 'Eggs', 'Flashlights', 'Garbage Bags',
+			   'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
+
 export default class ItemScreen extends React.Component {
 	state = { contents: "none", loading: true, item_name: "", addedToList: false };
 
@@ -20,7 +23,7 @@ export default class ItemScreen extends React.Component {
 			if (value === "true" || value === "done") {
 				this.setState({addedToList: true});
 			}
-		} catch (error) {
+		} catch {
 			Alert.alert("Error", "Unable to get item on list state");
 		}
 
@@ -41,14 +44,48 @@ export default class ItemScreen extends React.Component {
 
 	}
 
+	clearList = () => {
+		items.forEach(async (item, index) => {
+			try {
+				await AsyncStorage.removeItem(item);
+			} catch {
+				Alert.alert("Error", "We were unable to remove your items");
+			}
+		});
+	}
+
 	toggleItem = async () => {
 		try {
+
+			const value = parseInt(await AsyncStorage.getItem("lastToggleTime"));
+
+			if ((Date.now() - value) > 43200000) {
+				Alert.alert(
+					"It's been over 12 hours since you have added to your current list. Do you want to clear it?",
+					"",
+					[
+					{
+						text: "Please Don't!",
+						onPress: () => {}
+					},
+					{
+						text: "Go for it!",
+						onPress: () => this.clearList()
+					},
+					]
+				)
+			}
+
 
 			if (! this.state.addedToList) {
 				await AsyncStorage.setItem(this.state.item_name, "true");
 			} else {
 				await AsyncStorage.removeItem(this.state.item_name);
 			}
+
+			await AsyncStorage.setItem("lastToggleTime", Date.now().toString());
+
+			console.log("here");
 
 			this.setState({ addedToList : !this.state.addedToList });
 

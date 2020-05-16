@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Alert } from 'react-native';
 
 import useCachedResources from './hooks/useCachedResources';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
@@ -9,11 +9,26 @@ import LinkingConfiguration from './navigation/LinkingConfiguration';
 
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
+import CheckRegionAvailability from './api/CheckRegionAvailability';
+import GetCurrentLocation from './api/GetCurrentLocation';
 
 const Stack = createStackNavigator();
 
+alertRegionAvailability = async () => {
+  const { latitude, longitude } = await GetCurrentLocation();
+  const c = await CheckRegionAvailability({latitude: latitude, longitude: longitude});
+
+  console.log(c);
+
+  if (! c.available) {
+    Alert.alert("Thanks for checking shelfCheck out!", "Unfortunately, the app is not available in your region. Stay tuned at shelfcheck.io for when it may come to your region.");
+  }
+};
+
 export default function App(props) {
   const isLoadingComplete = useCachedResources();
+
+  alertRegionAvailability();
 
   if (!isLoadingComplete) {
     return null;

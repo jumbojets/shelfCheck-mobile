@@ -18,8 +18,6 @@ alertRegionAvailability = async () => {
   const { latitude, longitude } = await GetCurrentLocation();
   const c = await CheckRegionAvailability({latitude: latitude, longitude: longitude});
 
-  console.log(c);
-
   if (! c.available) {
     Alert.alert("Thanks for checking shelfCheck out!", "Unfortunately, the app is not available in your region. Stay tuned at shelfcheck.io for when it may come to your region.");
   }

@@ -11,25 +11,31 @@ export default function LinksScreen() {
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
           <Text style={styles.title}>More info</Text>
           <OptionButton
-            icon="md-compass"
+            icon="md-open"
             label="Visit our website"
             onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
           />
 
           <OptionButton
-            icon="ios-people"
-            label="Learn more about us"
-            onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io')}
-          />
-
-          <OptionButton
-            icon="md-at"
+            icon="md-paper-plane"
             label="Contact us"
             onPress={() => Linking.openURL('mailto:contact.shelfcheck@gmail.com')}
           />
 
           <OptionButton
-            icon="md-cafe"
+            icon="md-paper"
+            label="Terms and Conditions"
+            opPress={() => Linking.openURL('https://www.shelfcheck.io/terms')}
+          />
+
+          <OptionButton
+            icon="md-information-circle-outline"
+            label="Privacy Policy"
+            opPress={() => Linking.openURL('https://www.shelfcheck.io/policy')}
+          />
+
+          <OptionButton
+            icon="md-heart-empty"
             label="Buy us a coffee"
             onPress={() => Linking.openURL('https://www.shelfcheck.io/coffee')}
           />

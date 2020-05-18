@@ -46,11 +46,7 @@ const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant W
 			   'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
 
 class YourListScreen extends React.Component {
-	state = {contents: [], userItems: [], itemStates: {}, loading: true, forceRemountKey: 0};
-
-	forceRemount = () => {
-		this.state.forceRemountKey += 1;
-	}
+	state = {contents: [], userItems: [], itemStates: {}, loading: true};
 
 	clearList = () => {
 		items.forEach(async (item, index) => {
@@ -60,6 +56,9 @@ class YourListScreen extends React.Component {
 				Alert.alert("Error", "We were unable to remove your items");
 			}
 		});
+		this.setState({userItems: []});
+		this.setState({itemStates: {}});
+		this.setState({contents: []});
 	}
 
 	pressClearList = () => {
@@ -77,7 +76,6 @@ class YourListScreen extends React.Component {
 			},
 			]
 		)
-		this.forceRemount();
 	}
 
 	getItemListAndStates = async () => {
@@ -124,8 +122,6 @@ class YourListScreen extends React.Component {
 
 		const { latitude, longitude } = await GetCurrentLocation();
 
-		this.setState({forceRemountKey: 0});
-
 		const { navigation } = this.props;
 
 		var c = await GetClosestStoresMultipleItems({
@@ -154,150 +150,148 @@ class YourListScreen extends React.Component {
 		const { navigation } = this.props;
 
 		return (
-			<View key={this.state.forceRemountKey} style={{flex: 1}}>
-				<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
-					<View style={styles.main}>
-						<View style={styles.container}>
-							<View style={styles.titleRow}>
-								<Text style={styles.titleText}>Your List</Text>
-								<TouchableOpacity style={styles.clearListButton} onPress={this.pressClearList}>
-									<Text style={styles.clearText}>Clear list</Text>
-								</TouchableOpacity>
-							</View>
+			<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
+				<View style={styles.main}>
+					<View style={styles.container}>
+						<View style={styles.titleRow}>
+							<Text style={styles.titleText}>Your List</Text>
+							<TouchableOpacity style={styles.clearListButton} onPress={this.pressClearList}>
+								<Text style={styles.clearText}>Clear list</Text>
+							</TouchableOpacity>
+						</View>
 
-							{
-								this.state.contents.length !== 0?
-								<View>
-									<Text style={styles.captionText}>Swipe through the best stores we found for the items you need</Text>
-									<ViewPager style={styles.viewPager} initialPage={0} /*showPageIndicator={true}*/ >
+						{
+							this.state.contents.length !== 0?
+							<View>
+								<Text style={styles.captionText}>Swipe through the best stores we found for the items you need</Text>
+								<ViewPager style={styles.viewPager} initialPage={0} /*showPageIndicator={true}*/ >
 
-									<View key={0}>
-										<View style={styles.storeContainer}>
-										<View style={styles.storeInfoContainer} >
-											<Text style={styles.storeName}>add txt nxt to button</Text>
-											<Text style={styles.storeDistance}>I kinda wanna make this one look really different</Text>
-										</View>
-
-											<View style={styles.allItemsContainer}>
-
-											{
-												this.state.userItems.map((item, index) => (
-													<View key={index} style={styles.itemContainer}>
-														<Text style={this.state.itemStates[item] === "true" ? styles.itemName : styles.itemNameDone}>{item}</Text>
-
-														<View style={styles.unitsAddContainer}>
-
-															{
-																this.state.itemStates[item] === "true" ?
-
-																<TouchableOpacity style={styles.icon} onPress={this.submitData("", item)}>
-
-																	<LinearGradient
-																		style={styles.iconInner}
-																		colors = {['#74d3dc', "#7e84f3"]}
-																		start = {[0, 0.5]}
-																		end = {[1, 0.5]}>
-																		<Feather name="plus" size={26} color="#fff" />
-																	</LinearGradient>
-
-																</TouchableOpacity>
-
-																:
-
-																<View style={styles.icon}>
-																	<View style={[styles.iconInner, {backgroundColor: "#aaa"}]}>
-																		<Icon name="check" size={18} color={"#fff"} />
-																	</View>
-																</View>
-															}
-														</View>
-													</View>
-												))
-
-
-											}
-											</View>
-
-										</View>
+								<View key={0}>
+									<View style={styles.storeContainer}>
+									<View style={styles.storeInfoContainer} >
+										<Text style={styles.storeName}>add txt nxt to button</Text>
+										<Text style={styles.storeDistance}>I kinda wanna make this one look really different</Text>
 									</View>
 
-									{
-										this.state.contents.map((store, index) => (
+										<View style={styles.allItemsContainer}>
 
-											<View key={index + 1}>
-												<View style={styles.storeContainer}>
+										{
+											this.state.userItems.map((item, index) => (
+												<View key={index} style={styles.itemContainer}>
+													<Text style={this.state.itemStates[item] === "true" ? styles.itemName : styles.itemNameDone}>{item}</Text>
 
-													<View style={styles.topRowContainer}>
-
-														<TouchableOpacity style={styles.storeInfoContainer} onPress={() => {
-																												navigation.push('StoreScreen', {
-																													store_id: store._id
-																												})
-																											}}>
-
-															<Text style={styles.storeName}>{store.name}</Text>
-
-															<Text style={styles.storeDistance}>{store.distance.toFixed(1)} miles away</Text>
-
-														</TouchableOpacity>
-
-														<View style={styles.percentageContainer}>
-															<Text style={styles.percentageText}><Text style={{fontWeight: "bold"}}>{store.stock_proportion.toFixed(2) * 100}%</Text><Text> of</Text></Text>
-															<Text style={styles.percentageText}>your list</Text>
-														</View>
-
-													</View>
-
-
-													<View style={styles.allItemsContainer}>
+													<View style={styles.unitsAddContainer}>
 
 														{
-															store.approximate_quantities.map((item, index) => (
+															this.state.itemStates[item] === "true" ?
 
-																<View key={index} style={styles.itemContainer}>
-																	<Text style={this.state.itemStates[item.item_name] === "true" ? styles.itemName : styles.itemNameDone}>{item.item_name}</Text>
+															<TouchableOpacity style={styles.icon} onPress={this.submitData("", item)}>
 
+																<LinearGradient
+																	style={styles.iconInner}
+																	colors = {['#74d3dc', "#7e84f3"]}
+																	start = {[0, 0.5]}
+																	end = {[1, 0.5]}>
+																	<Feather name="plus" size={26} color="#fff" />
+																</LinearGradient>
 
-																	<View style={styles.unitsAddContainer}>
-																		<Text style={this.state.itemStates[item.item_name] === "true" ? styles.itemName : styles.itemNameDone}>~ {item.quantity.toFixed(0)} units</Text>
-																	</View>
+															</TouchableOpacity>
+
+															:
+
+															<View style={styles.icon}>
+																<View style={[styles.iconInner, {backgroundColor: "#aaa"}]}>
+																	<Icon name="check" size={18} color={"#fff"} />
 																</View>
-
-															))
+															</View>
 														}
-
 													</View>
+												</View>
+											))
 
-													<View style={styles.navigateRowContainer}>
-														<TouchableOpacity style={styles.navigateButton} onPress={() => this.openMapsApp(store.coordinates[0], store.coordinates[1], store.name)}>
-															<Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 17}}>Navigate</Text>
-															<Ionicons name="md-navigate" size={17} color="#4cd6de" />
-														</TouchableOpacity>
+
+										}
+										</View>
+
+									</View>
+								</View>
+
+								{
+									this.state.contents.map((store, index) => (
+
+										<View key={index + 1}>
+											<View style={styles.storeContainer}>
+
+												<View style={styles.topRowContainer}>
+
+													<TouchableOpacity style={styles.storeInfoContainer} onPress={() => {
+																											navigation.push('StoreScreen', {
+																												store_id: store._id
+																											})
+																										}}>
+
+														<Text style={styles.storeName}>{store.name}</Text>
+
+														<Text style={styles.storeDistance}>{store.distance.toFixed(1)} miles away</Text>
+
+													</TouchableOpacity>
+
+													<View style={styles.percentageContainer}>
+														<Text style={styles.percentageText}><Text style={{fontWeight: "bold"}}>{store.stock_proportion.toFixed(2) * 100}%</Text><Text> of</Text></Text>
+														<Text style={styles.percentageText}>your list</Text>
 													</View>
 
 												</View>
+
+
+												<View style={styles.allItemsContainer}>
+
+													{
+														store.approximate_quantities.map((item, index) => (
+
+															<View key={index} style={styles.itemContainer}>
+																<Text style={this.state.itemStates[item.item_name] === "true" ? styles.itemName : styles.itemNameDone}>{item.item_name}</Text>
+
+
+																<View style={styles.unitsAddContainer}>
+																	<Text style={this.state.itemStates[item.item_name] === "true" ? styles.itemName : styles.itemNameDone}>~ {item.quantity.toFixed(0)} units</Text>
+																</View>
+															</View>
+
+														))
+													}
+
+												</View>
+
+												<View style={styles.navigateRowContainer}>
+													<TouchableOpacity style={styles.navigateButton} onPress={() => this.openMapsApp(store.coordinates[0], store.coordinates[1], store.name)}>
+														<Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 17}}>Navigate</Text>
+														<Ionicons name="md-navigate" size={17} color="#4cd6de" />
+													</TouchableOpacity>
+												</View>
+
 											</View>
+										</View>
 
 
-										))
-									}
+									))
+								}
 
-									</ViewPager>
-								</View>
-								:
-								<View>
-									{
-										this.state.userItems.length === 0 ?
-										<Text style={styles.captionText}>Add some items to your list to use this page</Text>
-										:
-										<Text style={styles.captionText}>No stores nearby reported with items on your list</Text>
-									}
-								</View>
-							}
-						</View>
+								</ViewPager>
+							</View>
+							:
+							<View>
+								{
+									this.state.userItems.length === 0 ?
+									<Text style={styles.captionText}>Add some items to your list to use this page</Text>
+									:
+									<Text style={styles.captionText}>No stores nearby reported with items on your list</Text>
+								}
+							</View>
+						}
 					</View>
-				</ImageBackground>
-			</View>
+				</View>
+			</ImageBackground>
 		)
 		
 	}

@@ -83,7 +83,10 @@ export class NearbyStoresScreen extends React.Component {
 const styles = StyleSheet.create({
 	main: {
 		backgroundColor: '#e8eff1',
-		height: "100%",
+		flex: 1,
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "space-around",
 	},
 	title: {
 		fontSize: 30,
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
 		paddingBottom: 0,
 		borderRadius: 30,
 		marginHorizontal: "5%",
-		marginTop: "10%",
+		marginTop: "15%",
 		height: "90%",
 		shadowColor: "#000",
 		shadowOffset: {

@@ -3,9 +3,6 @@ import * as React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
-
-import { Dimensions } from 'react-native';
-
 import { MonoText } from '../components/StyledText';
 import GetClosestStores from '../api/GetClosestStores';
 import AppendCrowdsourcedData from '../api/AppendCrowdsourcedData';
@@ -37,14 +34,16 @@ export default class AddDataScreen extends React.Component {
 
 		const { defaultStore, defaultItem } = this.props.route.params;
 
-		if (defaultStore !== null) {
-			this.setState({selectedStore: defaultStore});
+		if (defaultItem !== "") {
 			this.setState({selectedItem: defaultItem});
 			this.setState({selectedItemIndex: items.indexOf(defaultItem)});
 		}
 
 		this.setState({ contents: c });
 		this.setState({ loading: false });
+
+		this.setState({ selectedStore: c[0].name})
+		this.setState({ selectedStoreIndex: 0})
 	}
 
 	submitData = async () => {

@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, ImageBackground, TouchableOpacity, Alert, AsyncStorage, Linking, Platform } from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, TouchableOpacity, Alert, AsyncStorage, Linking, Platform, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ViewPager from '@react-native-community/viewpager';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import AddDataScreen from './AddDataScreen';
 import StoreScreen from './StoreScreen';
@@ -46,7 +47,7 @@ const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant W
 			   'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
 
 class YourListScreen extends React.Component {
-	state = {contents: [], userItems: [], itemStates: {}, loading: true};
+	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0};
 
 	clearList = () => {
 		items.forEach(async (item, index) => {
@@ -134,6 +135,10 @@ class YourListScreen extends React.Component {
 			if (item.name.length > 13 + 3) {
 				c[index].name = item.name.slice(0, 13) + "...";
 			}
+			c[index].itemsHeight = c[index].approximate_quantities.length * 45;
+			if (c[index].itemsHeight > Dimensions.get("window").height * 0.35) {
+				c[index].itemsHeight = Dimensions.get("window").height * 0.35;
+			}
 		});
 
 
@@ -148,6 +153,12 @@ class YourListScreen extends React.Component {
 
 	render() {
 		const { navigation } = this.props;
+		var allItemsHeight = this.state.userItems.length * 45;
+		const scrollEnabled = allItemsHeight > Dimensions.get("window").height * 0.39;
+
+		if (scrollEnabled) {
+			allItemsHeight = Dimensions.get("window").height * 0.39;
+		}
 
 		return (
 			<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
@@ -155,9 +166,13 @@ class YourListScreen extends React.Component {
 					<View style={styles.container}>
 						<View style={styles.titleRow}>
 							<Text style={styles.titleText}>Your List</Text>
-							<TouchableOpacity style={styles.clearListButton} onPress={this.pressClearList}>
-								<Text style={styles.clearText}>Clear list</Text>
-							</TouchableOpacity>
+							{
+								this.state.userItems.length !== 0 ?
+								<TouchableOpacity style={styles.clearListButton} onPress={this.pressClearList}>
+									<Text style={styles.clearText}>Clear list</Text>
+								</TouchableOpacity>
+								: <View />
+							}
 						</View>
 
 						{
@@ -167,40 +182,41 @@ class YourListScreen extends React.Component {
 								<ViewPager style={styles.viewPager} initialPage={0} /*showPageIndicator={true}*/ >
 
 								<View key={0}>
-									<View style={styles.storeContainer}>
+									<View style={[styles.storeContainer, {backgroundColor: "#68ADEB"}]}>
 									<View style={styles.storeInfoContainer} >
-										<Text style={styles.storeName}>add txt nxt to button</Text>
-										<Text style={styles.storeDistance}>I kinda wanna make this one look really different</Text>
+										<Text style={styles.storeName}>Items</Text>
+										<Text style={styles.storeDistance}>Let us know what's in stock when you are finished</Text>
 									</View>
 
-										<View style={styles.allItemsContainer}>
+										<ScrollView style={[styles.allItemsContainer, {paddingVertical: 10, height: allItemsHeight + 30}]}>
 
 										{
 											this.state.userItems.map((item, index) => (
 												<View key={index} style={styles.itemContainer}>
-													<Text style={this.state.itemStates[item] === "true" ? styles.itemName : styles.itemNameDone}>{item}</Text>
+													<Text style={[this.state.itemStates[item] === "true" ? styles.itemName : styles.itemNameDone]}>{item}</Text>
 
 													<View style={styles.unitsAddContainer}>
 
 														{
 															this.state.itemStates[item] === "true" ?
 
-															<TouchableOpacity style={styles.icon} onPress={this.submitData("", item)}>
+															<TouchableOpacity style={styles.rightButton} onPress={this.submitData("", item)}>
 
 																<LinearGradient
-																	style={styles.iconInner}
+																	style={styles.buttonInner}
 																	colors = {['#74d3dc', "#7e84f3"]}
 																	start = {[0, 0.5]}
 																	end = {[1, 0.5]}>
-																	<Feather name="plus" size={26} color="#fff" />
+																	<Text style={styles.buttonText}>Add data</Text>
 																</LinearGradient>
 
 															</TouchableOpacity>
 
 															:
 
-															<View style={styles.icon}>
-																<View style={[styles.iconInner, {backgroundColor: "#aaa"}]}>
+															<View style={styles.rightButton}>
+																<View style={[styles.buttonInner, {backgroundColor: "#aaa"}]}>
+																	<Text style={styles.buttonText}>Done</Text>
 																	<Icon name="check" size={18} color={"#fff"} />
 																</View>
 															</View>
@@ -211,7 +227,7 @@ class YourListScreen extends React.Component {
 
 
 										}
-										</View>
+										</ScrollView>
 
 									</View>
 								</View>
@@ -237,14 +253,14 @@ class YourListScreen extends React.Component {
 													</TouchableOpacity>
 
 													<View style={styles.percentageContainer}>
-														<Text style={styles.percentageText}><Text style={{fontWeight: "bold"}}>{store.stock_proportion.toFixed(2) * 100}%</Text><Text> of</Text></Text>
+														<Text style={styles.percentageText}><Text style={{fontWeight: "bold"}}>{(store.stock_proportion * 100).toFixed(0)}%</Text><Text> of</Text></Text>
 														<Text style={styles.percentageText}>your list</Text>
 													</View>
 
 												</View>
 
 
-												<View style={styles.allItemsContainer}>
+												<ScrollView style={[styles.allItemsContainer, {height: store.itemsHeight + 17 }]} >
 
 													{
 														store.approximate_quantities.map((item, index) => (
@@ -261,7 +277,7 @@ class YourListScreen extends React.Component {
 														))
 													}
 
-												</View>
+												</ScrollView>
 
 												<View style={styles.navigateRowContainer}>
 													<TouchableOpacity style={styles.navigateButton} onPress={() => this.openMapsApp(store.coordinates[0], store.coordinates[1], store.name)}>
@@ -308,7 +324,7 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 		marginTop: "15%",
 		paddingTop: "8%",
-		paddingBottom: "5%",
+		paddingBottom: "1%",
 		height: "90%",
 		width: "90%",
 		shadowColor: "#000",
@@ -331,7 +347,7 @@ const styles = StyleSheet.create({
 		color: "#52c4e3",
 	},
 	clearListButton: {
-		backgroundColor: "#52c4e3",
+		backgroundColor: "#68ADEB",
 		borderRadius: 25,
 		height: "110%",
 		width: "25%",
@@ -361,16 +377,18 @@ const styles = StyleSheet.create({
 	},
 	viewPager: {
 		height: "90%",
-		marginTop: 15,
+		marginTop: 10,
 	},
 	storeContainer: {
 		backgroundColor: "#52c4e3",
 		marginHorizontal: "5%",
 		width: "90%",
 		borderRadius: 35,
-		padding: "5%",
-		paddingBottom: "6%",
+		paddingHorizontal: "5%",
+		paddingTop: "5%",
+		paddingBottom: "3%",
 		shadowColor: "#000",
+		marginBottom: 20,
 		shadowOffset: {
 			width: 0,
 			height: 3,
@@ -378,6 +396,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 4.65,
 		shadowOpacity: 0.25,
 		elevation: 7,
+		// flex: 1,
 	},
 	topRowContainer: {
 		width: "100%",
@@ -420,7 +439,7 @@ const styles = StyleSheet.create({
 	allItemsContainer: {
 		backgroundColor: "#fff",
 		borderRadius: 25,
-		marginVertical: 20,
+		marginTop: 10,
 		width: "100%",
 	},
 	itemContainer: {
@@ -446,22 +465,28 @@ const styles = StyleSheet.create({
 		height: "100%",
 		alignItems: "center",
 	},
-	icon: {
-		marginLeft: 8,
-		height: 30,
-		width: 30,
+	rightButton: {
+		height: "75%",
+		width: 80,
 		borderRadius: 30 / 2,
 	},
-	iconInner: {
+	buttonInner: {
 		height: "100%",
 		width: "100%",
-		borderRadius: 15,
+		borderRadius: 17,
 		flexDirection: "row",
 		justifyContent: "space-around",
-		alignItems: "center"
+		alignItems: "center",
+		paddingHorizontal: 5,
+	},
+	buttonText: {
+		color: "#fff",
+		fontWeight: "bold",
+		fontSize: 12,
 	},
 	navigateRowContainer: {
 		flexDirection: "row",
+		marginTop: 18,
 		justifyContent: "space-around",
 		alignItems: "center",
 		height: 43

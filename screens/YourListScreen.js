@@ -1,10 +1,11 @@
 import { Text, View, StyleSheet, ImageBackground, TouchableOpacity, Alert, AsyncStorage, Linking, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import ViewPager from '@react-native-community/viewpager';
 
 import AddDataScreen from './AddDataScreen';
@@ -18,19 +19,38 @@ export default function YourListPage() {
 	return (
 		<NavigationContainer independent={true}>
 			<Stack.Navigator screenOptions={{headerShown: false}}>
-				<Stack.Screen name="MainScreen" component={YourListScreen} />
+				<Stack.Screen name="MainScreen" component={AutoRefreshWrapper} />
 				<Stack.Screen name="AddDataScreen" component={AddDataScreen} />
 				<Stack.Screen name="StoreScreen" component={StoreScreen} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
+
+	
+}
+
+function AutoRefreshWrapper(props) {
+	const isFocused = useIsFocused();
+
+	return (
+		<View style={{flex:1}}>
+			{isFocused
+				? <View style={{flex:1}}><YourListScreen navigation={props.navigation} /></View>
+				: <View />
+			}
+		</View>
+	)
 }
 
 const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant Wipes', 'Eggs', 'Flashlights', 'Garbage Bags',
 			   'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
 
-export class YourListScreen extends React.Component {
-	state = {contents: [], userItems: [], itemStates: {}, loading: true};
+class YourListScreen extends React.Component {
+	state = {contents: [], userItems: [], itemStates: {}, loading: true, forceRemountKey: 0};
+
+	forceRemount = () => {
+		this.state.forceRemountKey += 1;
+	}
 
 	clearList = () => {
 		items.forEach(async (item, index) => {
@@ -57,6 +77,7 @@ export class YourListScreen extends React.Component {
 			},
 			]
 		)
+		this.forceRemount();
 	}
 
 	getItemListAndStates = async () => {
@@ -92,8 +113,8 @@ export class YourListScreen extends React.Component {
 		const { navigation } = this.props;
 		return () => {
 			navigation.push('AddDataScreen', {
-				storeName: storeName,
-				itemName: itemName,
+				defaultStore: storeName,
+				defaultItem: itemName,
 			});
 		}
 	}
@@ -102,6 +123,10 @@ export class YourListScreen extends React.Component {
 		await this.getItemListAndStates();
 
 		const { latitude, longitude } = await GetCurrentLocation();
+
+		this.setState({forceRemountKey: 0});
+
+		const { navigation } = this.props;
 
 		var c = await GetClosestStoresMultipleItems({
 			items: this.state.userItems,
@@ -119,13 +144,17 @@ export class YourListScreen extends React.Component {
 		this.setState({ contents: c });
 		this.setState({ loading: false });
 
+		navigation.addListener('focus', () => {
+			console.log("aasdfas");
+		});
+
 	}
 
 	render() {
 		const { navigation } = this.props;
 
 		return (
-			<View style={{flex: 1}}>
+			<View key={this.state.forceRemountKey} style={{flex: 1}}>
 				<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
 					<View style={styles.main}>
 						<View style={styles.container}>
@@ -140,12 +169,62 @@ export class YourListScreen extends React.Component {
 								this.state.contents.length !== 0?
 								<View>
 									<Text style={styles.captionText}>Swipe through the best stores we found for the items you need</Text>
-									<ViewPager style={styles.viewPager} initialPage={0} showPageIndicator={true}>
+									<ViewPager style={styles.viewPager} initialPage={0} /*showPageIndicator={true}*/ >
+
+									<View key={0}>
+										<View style={styles.storeContainer}>
+										<View style={styles.storeInfoContainer} >
+											<Text style={styles.storeName}>add txt nxt to button</Text>
+											<Text style={styles.storeDistance}>I kinda wanna make this one look really different</Text>
+										</View>
+
+											<View style={styles.allItemsContainer}>
+
+											{
+												this.state.userItems.map((item, index) => (
+													<View key={index} style={styles.itemContainer}>
+														<Text style={this.state.itemStates[item] === "true" ? styles.itemName : styles.itemNameDone}>{item}</Text>
+
+														<View style={styles.unitsAddContainer}>
+
+															{
+																this.state.itemStates[item] === "true" ?
+
+																<TouchableOpacity style={styles.icon} onPress={this.submitData("", item)}>
+
+																	<LinearGradient
+																		style={styles.iconInner}
+																		colors = {['#74d3dc', "#7e84f3"]}
+																		start = {[0, 0.5]}
+																		end = {[1, 0.5]}>
+																		<Feather name="plus" size={26} color="#fff" />
+																	</LinearGradient>
+
+																</TouchableOpacity>
+
+																:
+
+																<View style={styles.icon}>
+																	<View style={[styles.iconInner, {backgroundColor: "#aaa"}]}>
+																		<Icon name="check" size={18} color={"#fff"} />
+																	</View>
+																</View>
+															}
+														</View>
+													</View>
+												))
+
+
+											}
+											</View>
+
+										</View>
+									</View>
 
 									{
 										this.state.contents.map((store, index) => (
 
-											<View key={index}>
+											<View key={index + 1}>
 												<View style={styles.storeContainer}>
 
 													<View style={styles.topRowContainer}>
@@ -176,23 +255,11 @@ export class YourListScreen extends React.Component {
 															store.approximate_quantities.map((item, index) => (
 
 																<View key={index} style={styles.itemContainer}>
-																	<Text style={styles.itemName}>{item.item_name}</Text>
+																	<Text style={this.state.itemStates[item.item_name] === "true" ? styles.itemName : styles.itemNameDone}>{item.item_name}</Text>
 
 
 																	<View style={styles.unitsAddContainer}>
-																		<Text style={styles.itemName}>~{item.quantity.toFixed(0)} units</Text>
-
-																		<TouchableOpacity style={styles.icon} onPress={this.submitData(store.name, item.item_name)}>
-
-																			<LinearGradient
-																				style = {{height: "100%", width: "100%", borderRadius:15, flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}
-																				colors = {['#74d3dc', "#7e84f3"]}
-																				start = {[0, 0.5]}
-																				end = {[1, 0.5]}>
-																				<Feather name="plus" size={26} color="#fff" />
-																			</LinearGradient>
-
-																		</TouchableOpacity>
+																		<Text style={this.state.itemStates[item.item_name] === "true" ? styles.itemName : styles.itemNameDone}>~ {item.quantity.toFixed(0)} units</Text>
 																	</View>
 																</View>
 
@@ -227,15 +294,12 @@ export class YourListScreen extends React.Component {
 									}
 								</View>
 							}
-
-							<View>
-								<Text>Hello</Text>
-							</View>
 						</View>
 					</View>
 				</ImageBackground>
 			</View>
 		)
+		
 	}
 }
 
@@ -303,8 +367,7 @@ const styles = StyleSheet.create({
 	},
 	viewPager: {
 		height: "90%",
-		marginTop: 10,
-		backgroundColor: "pink",
+		marginTop: 15,
 	},
 	storeContainer: {
 		backgroundColor: "#52c4e3",
@@ -367,16 +430,22 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	itemContainer: {
-		height: 50,
+		height: 45,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
 		paddingHorizontal: "5%",
 	},
 	itemName: {
-		fontWeight: "normal",
+		fontWeight: "bold",
 		fontSize: 17,
 		color: "#52C4E3",
+	},
+	itemNameDone: {
+		fontWeight: "bold",
+		fontSize: 17,
+		color: "#aaa",
+		textDecorationLine: 'line-through',
 	},
 	unitsAddContainer: {
 		flexDirection: "row",
@@ -388,6 +457,14 @@ const styles = StyleSheet.create({
 		height: 30,
 		width: 30,
 		borderRadius: 30 / 2,
+	},
+	iconInner: {
+		height: "100%",
+		width: "100%",
+		borderRadius: 15,
+		flexDirection: "row",
+		justifyContent: "space-around",
+		alignItems: "center"
 	},
 	navigateRowContainer: {
 		flexDirection: "row",

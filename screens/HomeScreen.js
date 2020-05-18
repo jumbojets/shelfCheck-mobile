@@ -130,7 +130,7 @@ export function HomePageScreen({ navigation }) {
           </View>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('AddDataScreen')}
+            onPress={() => navigation.push('AddDataScreen', {defaultStore: "", defaultItem: ""})}
             style = {styles.addDataButtonContainer}
           >
 

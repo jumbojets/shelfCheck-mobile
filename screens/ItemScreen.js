@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Text, StyleSheet, View, TouchableOpacity, AsyncStorage, Alert, ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Ionicons } from '@expo/vector-icons';
 
 import GetClosestStoresSingleItem from '../api/GetClosestStoresSingleItem';
 import GetCurrentLocation from '../api/GetCurrentLocation';

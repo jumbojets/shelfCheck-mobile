@@ -34,11 +34,20 @@ export default class AddDataScreen extends React.Component {
 		const { latitude, longitude } = await GetCurrentLocation();
 
 		var c = await GetClosestStores({latitude: latitude, longitude: longitude});
+
+		const { defaultStore, defaultItem } = this.props.route.params;
+
+		if (defaultStore !== null) {
+			this.setState({selectedStore: defaultStore});
+			this.setState({selectedItem: defaultItem});
+			this.setState({selectedItemIndex: items.indexOf(defaultItem)});
+		}
+
 		this.setState({ contents: c });
 		this.setState({ loading: false });
 	}
 
-	submitData = () => {
+	submitData = async () => {
 		const { navigation } = this.props;
 
 		if (this.state.selectedStore === "") {
@@ -64,6 +73,12 @@ export default class AddDataScreen extends React.Component {
 		}
 
 		AppendCrowdsourcedData(contents);
+
+		try {
+			await AsyncStorage.setItem(this.state.selectedItem, "done");
+		} catch {
+			Alert.alert("Error", "Problem setting state as done");
+		}
 
 		navigation.goBack();
 	}

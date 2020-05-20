@@ -25,13 +25,13 @@ export default function LinksScreen() {
           <OptionButton
             icon="md-paper"
             label="Terms and Conditions"
-            opPress={() => Linking.openURL('https://www.shelfcheck.io/terms')}
+            onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io/terms')}
           />
 
           <OptionButton
             icon="md-information-circle-outline"
             label="Privacy Policy"
-            opPress={() => Linking.openURL('https://www.shelfcheck.io/privacy')}
+            onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io/privacy')}
           />
 
           <OptionButton

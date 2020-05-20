@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { FontAwesome, Octicons } from '@expo/vector-icons';
+import { FontAwesome, Octicons, FontAwesome5 } from '@expo/vector-icons';
 
 import HomeScreen from '../screens/HomeScreen';
 import NearbyStoresScreen from '../screens/NearbyStoresScreen';
@@ -37,7 +37,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={NearbyStoresScreen}
         options={{
           title: '',
-          tabBarIcon: ({ focused }) => <FontAwesome name="shopping-cart" size={30} style={{ marginBottom: -18 }} color={focused ? Colors.tabIconSelected : Colors.tabIconDefault} />,
+          tabBarIcon: ({ focused }) => <FontAwesome5 name="map-marker-alt" size={24} style={{ marginBottom: -18 }} color={focused ? Colors.tabIconSelected : Colors.tabIconDefault} />,
         }}
       />
       <BottomTab.Screen

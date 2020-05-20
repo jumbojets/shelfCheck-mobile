@@ -136,7 +136,7 @@ export function HomePageScreen({ navigation }) {
 
             <LinearGradient
               colors = {['#74d3dc', "#7e84f3"]}
-              style={{width: "100%", height: "100%", justifyContent: "space-around", borderRadius: Dimensions.get("window").width * 0.06, flexDirection: "row", alignItems: "center"}}
+              style={{width: "100%", height: "100%", justifyContent: "space-around", borderRadius: 22, flexDirection: "row", alignItems: "center"}}
               start = {[0, 0.5]}
               end = {[1, 0.5]}
             >
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "10%",
     backgroundColor: "#ffff",
-    borderRadius: Dimensions.get("window").width * 0.2,
+    borderRadius: 22,
     shadowOffset: {
       width: 0,
       height: 4,

@@ -22,11 +22,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.jamestaylor.shelfcheck",
+      "bundleIdentifier": "com.shelfcheck.shelfcheck",
+      "buildNumber": "2",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "shelfCheck needs your location to find stores near you for the items you need"
+      }
     },
     "android": {
-      "package": "com.jamestaylor.shelfcheck",
+      "package": "com.shelfcheck.shelfcheck",
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

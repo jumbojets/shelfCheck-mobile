@@ -117,8 +117,8 @@ export default class AddDataScreen extends React.Component {
 										selectedIndex={this.state.selectedStoreIndex}
 										style={{ width: "95%" }}
 										onSelect={(index) => {
-											this.setState({selectedStoreIndex: index - 1});
-											this.setState({selectedStore: this.state.contents[index - 1].name})
+											this.setState({selectedStoreIndex: index});
+											this.setState({selectedStore: this.state.contents[index.row].name})
 										}} >
 
 										{
@@ -139,8 +139,8 @@ export default class AddDataScreen extends React.Component {
 										value={this.state.selectedItem}
 										style={{ width: "95%" }}
 										onSelect={(index) => {
-											this.setState({selectedItemIndex: index - 1});
-											this.setState({selectedItem: items[index - 1]});
+											this.setState({selectedItemIndex: index});
+											this.setState({selectedItem: items[index.row]});
 										}} >
 
 

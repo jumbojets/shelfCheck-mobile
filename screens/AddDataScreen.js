@@ -17,7 +17,7 @@ export default class AddDataScreen extends React.Component {
 	state = {contents: [], loading: true, 
 			 selectedStoreIndex: 0, selectedItemIndex: 0,
 			 selectedStore: "", selectedItem: "", 
-			 checked: true, quantity: "",
+			 checked: true, quantity: "", itemPickerLocked: false
 			};
 
 	changeQuantity = (nextValue) => {
@@ -37,6 +37,7 @@ export default class AddDataScreen extends React.Component {
 		if (defaultItem !== "") {
 			this.setState({selectedItem: defaultItem});
 			this.setState({selectedItemIndex: items.indexOf(defaultItem)});
+			this.setState({itemPickerLocked: true})
 		}
 
 		this.setState({ contents: c });
@@ -136,6 +137,7 @@ export default class AddDataScreen extends React.Component {
 									<Select
 										placeholder="Select an item"
 										selectedIndex={this.state.selectedItemIndex}
+										disabled={this.state.itemPickerLocked}
 										value={this.state.selectedItem}
 										style={{ width: "95%" }}
 										onSelect={(index) => {

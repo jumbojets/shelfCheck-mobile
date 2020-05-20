@@ -145,10 +145,6 @@ class YourListScreen extends React.Component {
 		this.setState({ contents: c });
 		this.setState({ loading: false });
 
-		navigation.addListener('focus', () => {
-			console.log("aasdfas");
-		});
-
 	}
 
 	render() {
@@ -299,7 +295,7 @@ class YourListScreen extends React.Component {
 							<View>
 								{
 									this.state.userItems.length === 0 ?
-									<Text style={styles.captionText}>Add some items to your list to use this page</Text>
+									<Text style={styles.captionText}>Looks like nothing's here! Add some items to your list to get started!</Text>
 									:
 									<Text style={styles.captionText}>No stores nearby reported with items on your list</Text>
 								}

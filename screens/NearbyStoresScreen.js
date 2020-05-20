@@ -53,7 +53,7 @@ export class NearbyStoresScreen extends React.Component {
 				<ImageBackground source={require('../assets/images/background-2.png')} style={{width: '100%', height: '100%'}}>
 					<View style={styles.container}>
 						<Text style={styles.title}>Closest stores to you</Text>
-						<ScrollView showsVerticalScrollIndicator={false} style={{padding: 0, marginTop: "7%"}}>
+						<ScrollView showsVerticalScrollIndicator={false} style={{padding: 0, marginTop: "10%"}}>
 							{
 								this.state.contents.map((item, index) => (
 									<TouchableOpacity

@@ -1,7 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Alert } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Alert, AsyncStorage, Linking } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 
 import useCachedResources from './hooks/useCachedResources';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
@@ -21,12 +22,44 @@ alertRegionAvailability = async () => {
   if (! c.available) {
     Alert.alert("Thanks for checking shelfCheck out!", "Unfortunately, the app is not available in your region. Stay tuned at shelfcheck.io for when it may come to your region.");
   }
+
 };
 
+alertIfTermsNotChecked = async () => {
+  try {
+    const value = await AsyncStorage.getItem('hasAgreedTerms');
+    if (value === null) {
+      Alert.alert(
+        "Welcome to shelfCheck!",
+        "By using our app you agree to our Terms and Conditions.",
+        [
+          {
+            text: "Review Terms and Conditions",
+            onPress: () => WebBrowser.openBrowserAsync('https://www.shelfcheck.io/terms'),
+          },
+          {
+            text: "Sounds good!",
+            onPress: () => {},
+          }
+        ]
+      )
+    }
+    await AsyncStorage.setItem('hasAgreedTerms', "true");
+  } catch (error) {
+  }
+}
+
 export default function App(props) {
+  const [timesLogged, setTimesLogged] = React.useState(0);
+
+  if (timesLogged === 0) {
+    alertRegionAvailability();
+    alertIfTermsNotChecked();
+    setTimesLogged(1);
+  }
+
   const isLoadingComplete = useCachedResources();
 
-  alertRegionAvailability();
 
   if (!isLoadingComplete) {
     return null;

@@ -31,7 +31,7 @@ export default function LinksScreen() {
           <OptionButton
             icon="md-information-circle-outline"
             label="Privacy Policy"
-            opPress={() => Linking.openURL('https://www.shelfcheck.io/policy')}
+            opPress={() => Linking.openURL('https://www.shelfcheck.io/privacy')}
           />
 
           <OptionButton

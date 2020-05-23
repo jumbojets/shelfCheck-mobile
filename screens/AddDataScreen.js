@@ -36,7 +36,7 @@ export default class AddDataScreen extends React.Component {
 
 		if (defaultItem !== "") {
 			this.setState({selectedItem: defaultItem});
-			this.setState({selectedItemIndex: items.indexOf(defaultItem)});
+			this.setState({selectedItemIndex: items.indexOf(defaultItem) + 1});
 			this.setState({itemPickerLocked: true})
 		}
 
@@ -65,9 +65,15 @@ export default class AddDataScreen extends React.Component {
 			return;
 		}
 
+		if (this.state.selectedStoreIndex === 0) {
+			this.state.selectedStoreIndex = 1;
+		}
+
+		console.log(this.state.selectedStoreIndex)
+
 		const contents = {
-			inventory_id: this.state.contents[this.state.selectedStoreIndex].inventory_id,
-			item_name: items[this.state.selectedItemIndex],
+			inventory_id: this.state.contents[this.state.selectedStoreIndex - 1].inventory_id,
+			item_name: items[this.state.selectedItemIndex - 1],
 			in_stock: this.state.checked,
 			quantity: parseInt(this.state.quantity),
 		}

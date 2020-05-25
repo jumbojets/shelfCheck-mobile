@@ -144,7 +144,6 @@ class YourListScreen extends React.Component {
 
 		this.setState({ contents: c });
 		this.setState({ loading: false });
-
 	}
 
 	render() {
@@ -172,9 +171,15 @@ class YourListScreen extends React.Component {
 						</View>
 
 						{
-							this.state.contents.length !== 0?
+							this.state.userItems.length !== 0?
 							<View>
-								<Text style={styles.captionText}>Swipe through the best stores we found for the items you need</Text>
+							{
+								this.state.contents.length !== 0?
+								<View><Text style={styles.captionText}>Swipe through the best stores we found for the items you need</Text></View>
+								:
+								<View><Text style={styles.captionText}>There aren't reports for items on your list. Go out and add some!</Text></View>
+							}
+
 								<ViewPager style={styles.viewPager} initialPage={0} /*showPageIndicator={true}*/ >
 
 								<View key={0}>

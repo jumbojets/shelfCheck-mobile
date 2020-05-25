@@ -9,7 +9,7 @@ const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant W
 			   'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
 
 export default class ItemScreen extends React.Component {
-	state = { contents: "none", loading: true, item_name: "", addedToList: false };
+	state = { contents: "none", loading: true, item_name: "", addedToList: false, isListEmpty: true };
 
 	async componentDidMount() {
 		const { item_name } = this.props.route.params;
@@ -41,12 +41,30 @@ export default class ItemScreen extends React.Component {
 		this.setState({ contents: c });
 		this.setState({ loading: false });
 
+		this.findIfListIsEmpty()
 	}
 
-	clearList = () => {
+	findIfListIsEmpty = async () => {
+		this.setState({isListEmpty: true});
+
+		await items.forEach(async (item, index) => {
+			try {
+				const value = await AsyncStorage.getItem(item);
+				if (value !== null) {
+					this.setState({isListEmpty: false});
+				}
+			} catch (error) {
+				Alert.alert("Error", "We are unable to properly retrieve your list" + error);
+			}
+		});
+	}
+
+	clearList = async () => {
 		items.forEach(async (item, index) => {
 			try {
-				await AsyncStorage.removeItem(item);
+				if (item !== this.state.item_name) {
+					await AsyncStorage.removeItem(item);
+				}
 			} catch {
 				Alert.alert("Error", "We were unable to remove your items");
 			}
@@ -58,7 +76,7 @@ export default class ItemScreen extends React.Component {
 
 			const value = parseInt(await AsyncStorage.getItem("lastToggleTime"));
 
-			if ((Date.now() - value) > 43200000) {
+			if (((Date.now() - value) > 43200000) && !this.state.isListEmpty) {
 				Alert.alert(
 					"It's been over 12 hours since you have added to your current list. Do you want to clear it?",
 					"",
@@ -69,7 +87,7 @@ export default class ItemScreen extends React.Component {
 					},
 					{
 						text: "Go for it!",
-						onPress: () => this.clearList()
+						onPress: async () => await this.clearList()
 					},
 					]
 				)
@@ -83,8 +101,6 @@ export default class ItemScreen extends React.Component {
 			}
 
 			await AsyncStorage.setItem("lastToggleTime", Date.now().toString());
-
-			console.log("here");
 
 			this.setState({ addedToList : !this.state.addedToList });
 

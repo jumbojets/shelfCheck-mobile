@@ -175,10 +175,11 @@ export default class AddDataScreen extends React.Component {
 								<View style={styles.captionedContainer}>
 									<Text style={styles.caption}>Approximate quantity?</Text>
 									<Input
-										placeholder='--'
+										placeholder='----'
 										disabled={!this.state.checked}
 										value={this.state.quantity}
 										onChangeText={this.changeQuantity}
+										size="medium"
 									/>
 								</View>
 

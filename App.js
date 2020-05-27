@@ -88,12 +88,11 @@ export default function App(props) {
   if (timesLogged === 0) {
     alertRegionAvailability();
     alertIfTermsNotChecked();
+    alertIfOldVersion();
     setTimesLogged(1);
   }
 
   const isLoadingComplete = useCachedResources();
-
-  alertIfOldVersion();
 
   if (!isLoadingComplete) {
     return null;

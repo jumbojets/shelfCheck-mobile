@@ -35,6 +35,16 @@ export default class ItemScreen extends React.Component {
 				if (item.name.length > 20) {
 					c[index].name = item.name.slice(0, 17) + "...";
 				}
+				if (item.recency === 301) {
+					item.recency = "yesterday's estimate";
+				} else if (item.recency === 300) {
+					item.recency = "> 6 hours ago";
+				} else if (item.recency > 100) {
+					const hours = Math.round(item.recency / 60);
+					item.recency = "~ " + hours.toString() + " hours ago";
+				} else {
+					item.recency = item.recency.toFixed(0).toString() + " min ago";
+				}
 			});
 		}
 
@@ -176,7 +186,7 @@ export default class ItemScreen extends React.Component {
 
 										<View style={styles.rowContainer}>
 											<Text style={styles.bottomRowText}>{item.distance.toFixed(1)} miles away</Text>
-											<Text style={styles.bottomRowText}>{item.recency.toFixed(0)} min ago</Text>
+											<Text style={styles.bottomRowText}>{item.recency}</Text>
 										</View>
 
 									</TouchableOpacity>

@@ -35,6 +35,18 @@ export default class StoreScreen extends React.Component {
 					if (item.item_name === firstItem) {
 						[c.inventory[0], c.inventory[index]] = [c.inventory[index], c.inventory[0]];
 					}
+					item.crowdsourced_data.forEach((data, index) => {
+						if (data.recency === 301) {
+							data.recency = "yesterday's estimate"
+						} else if (data.recency === 300) {
+							data.recency = "> 6 hours ago";
+						} else if (data.recency > 100) {
+							const hours = Math.round(data.recency / 60);
+							data.recency = "~ " + hours.toString() + " hours ago";
+						} else {
+							data.recency = data.recency.toFixed(0).toString() + " min ago";
+						}
+					})
 				});
 			}
 		}
@@ -109,7 +121,7 @@ export default class StoreScreen extends React.Component {
 						            	this.state.contents.inventory[this.state.modalItemIndex].crowdsourced_data.map((item, index) => (
 											<View key={index} style={styles.modalButton}>
 												<Text style={styles.modalText}>{item.quantity} units</Text>
-												<Text style={styles.modalText}>{item.recency.toFixed(0)} min ago</Text>
+												<Text style={styles.modalText}>{item.recency}</Text>
 											</View>
 										))
 						            }

@@ -1,7 +1,6 @@
 {
   "expo": {
     "name": "shelfCheck",
-    "slug": "shelfCheck",
     "platforms": [
       "ios",
       "android"
@@ -31,9 +30,6 @@
     "android": {
       "package": "com.shelfcheck.shelfcheck",
       "versionCode": 3
-    },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
     }
   }
 }

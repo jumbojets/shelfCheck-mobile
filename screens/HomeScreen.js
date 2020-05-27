@@ -291,8 +291,8 @@ const styles = StyleSheet.create({
 });
 
 const itemsByCategory = {
-  Nutrition: ["Bread", "Milk", "Eggs", "Bottled Water", "Ground Beef"],
+  Nutrition: ["Bread", "Milk", "Eggs", "Bottled Water", "Ground Beef", "Flour"],
   Health: ["Toilet Paper", "Diapers", "Masks"],
-  Cleaning: ["Garbage Bags", "Disinfectant Wipes", "Hand Sanitizer", "Hand Soap", "Paper Towels"],
+  Cleaning: ["Disinfectant Wipes", "Hand Sanitizer", "Hand Soap", "Paper Towels", "Disinfectant Spray", "Detergent"],
   Power: ["Batteries", "Flashlights"],
 }

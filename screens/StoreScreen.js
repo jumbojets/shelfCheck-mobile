@@ -36,9 +36,7 @@ export default class StoreScreen extends React.Component {
 						[c.inventory[0], c.inventory[index]] = [c.inventory[index], c.inventory[0]];
 					}
 					item.crowdsourced_data.forEach((data, index) => {
-						if (data.recency === 301) {
-							data.recency = "yesterday's estimate"
-						} else if (data.recency === 300) {
+						if (data.recency > 299) {
 							data.recency = "> 6 hours ago";
 						} else if (data.recency > 100) {
 							const hours = Math.round(data.recency / 60);

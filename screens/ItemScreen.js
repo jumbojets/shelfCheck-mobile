@@ -36,7 +36,7 @@ export default class ItemScreen extends React.Component {
 					c[index].name = item.name.slice(0, 17) + "...";
 				}
 				if (item.recency === 301) {
-					item.recency = "yesterday's estimate";
+					item.recency = "Trend Estimate";
 				} else if (item.recency === 300) {
 					item.recency = "> 6 hours ago";
 				} else if (item.recency > 100) {

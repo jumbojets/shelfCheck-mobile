@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { Platform, StatusBar, StyleSheet, View, Alert, AsyncStorage, Linking } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
+import Constants  from 'expo-constants';
 
 import useCachedResources from './hooks/useCachedResources';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
@@ -12,6 +13,7 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 import CheckRegionAvailability from './api/CheckRegionAvailability';
 import GetCurrentLocation from './api/GetCurrentLocation';
+import IsAppVersionCurrent from './api/IsAppVersionCurrent';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +51,37 @@ alertIfTermsNotChecked = async () => {
   }
 }
 
+alertIfOldVersion = async () => {
+  // this will not work in expo app because it has a different version number
+  const contents = await IsAppVersionCurrent({version: Constants.nativeAppVersion});
+
+  if (!contents.current) {
+
+    Alert.alert(
+      "Welcome back!",
+      "There is a new update to the app! It has new features and bug fixes. We strongly recommend installing it.",
+      [
+        {
+          text: "No Thanks!",
+          onPress: () => {},
+        },
+        {
+          text: "Let's do it!",
+          onPress: () => {
+            const url = Platform.select({
+              ios: 'https://apps.apple.com/us/app/shelfcheck-shop-smarter/id1514416220',
+              android: 'https://play.google.com/store/apps/details?id=com.shelfcheck.shelfcheck'
+            });
+
+            Linking.openURL(url);
+          },
+        }
+      ]
+    )
+
+  }
+}
+
 export default function App(props) {
   const [timesLogged, setTimesLogged] = React.useState(0);
 
@@ -60,6 +93,7 @@ export default function App(props) {
 
   const isLoadingComplete = useCachedResources();
 
+  alertIfOldVersion();
 
   if (!isLoadingComplete) {
     return null;

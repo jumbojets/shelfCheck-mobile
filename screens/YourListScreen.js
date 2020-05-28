@@ -13,6 +13,7 @@ import AddDataScreen from './AddDataScreen';
 import StoreScreen from './StoreScreen';
 import GetCurrentLocation from '../api/GetCurrentLocation';
 import GetClosestStoresMultipleItems from '../api/GetClosestStoresMultipleItems';
+import Items from '../constants/Items';
 
 const Stack = createStackNavigator();
 
@@ -43,14 +44,11 @@ function AutoRefreshWrapper(props) {
 	)
 }
 
-const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant Wipes', 'Eggs', 'Flashlights', 'Garbage Bags',
-			   'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
-
 class YourListScreen extends React.Component {
 	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0};
 
 	clearList = () => {
-		items.forEach(async (item, index) => {
+		Items.forEach(async (item, index) => {
 			try {
 				await AsyncStorage.removeItem(item);
 			} catch {
@@ -83,7 +81,7 @@ class YourListScreen extends React.Component {
 		this.setState({userItems: []});
 		this.setState({itemStates: {}});
 
-		await items.forEach(async (item, index) => {
+		await Items.forEach(async (item, index) => {
 			try {
 				const value = await AsyncStorage.getItem(item);
 				if (value !== null) {

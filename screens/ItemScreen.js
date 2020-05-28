@@ -4,9 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import GetClosestStoresSingleItem from '../api/GetClosestStoresSingleItem';
 import GetCurrentLocation from '../api/GetCurrentLocation';
-
-const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Disinfectant Wipes', 'Eggs', 'Flashlights', 'Garbage Bags',
-			   'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
+import Items from '../constants/Items';
 
 export default class ItemScreen extends React.Component {
 	state = { contents: "none", loading: true, item_name: "", addedToList: false, isListEmpty: true };
@@ -36,7 +34,7 @@ export default class ItemScreen extends React.Component {
 					c[index].name = item.name.slice(0, 17) + "...";
 				}
 				if (item.recency === 301) {
-					item.recency = "Trend Estimate";
+					item.recency = "Daily trend est.";
 				} else if (item.recency === 300) {
 					item.recency = "> 6 hours ago";
 				} else if (item.recency > 100) {
@@ -57,7 +55,7 @@ export default class ItemScreen extends React.Component {
 	findIfListIsEmpty = async () => {
 		this.setState({isListEmpty: true});
 
-		await items.forEach(async (item, index) => {
+		await Items.forEach(async (item, index) => {
 			try {
 				const value = await AsyncStorage.getItem(item);
 				if (value !== null) {
@@ -70,7 +68,7 @@ export default class ItemScreen extends React.Component {
 	}
 
 	clearList = async () => {
-		items.forEach(async (item, index) => {
+		Items.forEach(async (item, index) => {
 			try {
 				if (item !== this.state.item_name) {
 					await AsyncStorage.removeItem(item);

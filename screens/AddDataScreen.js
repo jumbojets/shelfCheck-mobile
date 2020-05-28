@@ -7,11 +7,9 @@ import { MonoText } from '../components/StyledText';
 import GetClosestStores from '../api/GetClosestStores';
 import AppendCrowdsourcedData from '../api/AppendCrowdsourcedData';
 import GetCurrentLocation from '../api/GetCurrentLocation';
+import Items from '../constants/Items';
 
 import { Select, SelectItem, Toggle, Input } from '@ui-kitten/components';
-
-const items = ['Batteries', 'Bottled Water', 'Bread', 'Diapers', 'Detergent', 'Disinfectant Spray', 'Disinfectant Wipes', 'Eggs',
-			   'Flashlights', 'Flour', 'Garbage Bags', 'Ground Beef', 'Hand Sanitizer', 'Hand Soap', 'Masks', 'Milk', 'Paper Towels', 'Toilet Paper'];
 
 export default class AddDataScreen extends React.Component {
 	state = {contents: [], loading: true, 
@@ -36,7 +34,7 @@ export default class AddDataScreen extends React.Component {
 
 		if (defaultItem !== "") {
 			this.setState({selectedItem: defaultItem});
-			this.setState({selectedItemIndex: items.indexOf(defaultItem) + 1});
+			this.setState({selectedItemIndex: Items.indexOf(defaultItem) + 1});
 			this.setState({itemPickerLocked: true})
 		}
 
@@ -73,7 +71,7 @@ export default class AddDataScreen extends React.Component {
 
 		const contents = {
 			inventory_id: this.state.contents[this.state.selectedStoreIndex - 1].inventory_id,
-			item_name: items[this.state.selectedItemIndex - 1],
+			item_name: Items[this.state.selectedItemIndex - 1],
 			in_stock: this.state.checked,
 			quantity: parseInt(this.state.quantity),
 		}
@@ -81,11 +79,15 @@ export default class AddDataScreen extends React.Component {
 		AppendCrowdsourcedData(contents);
 
 		try {
-			await AsyncStorage.setItem(this.state.selectedItem, "done");
-		} catch {
-			Alert.alert("Error", "Problem setting state as done");
-		}
+			const value = await AsyncStorage.getItem(this.state.selectedItem);
 
+			if (value !== null) {
+				await AsyncStorage.setItem(this.state.selectedItem, "done");
+			}
+		} catch {
+			Alert.alert("Error", "Problem setting state as done")
+		}
+		
 		navigation.goBack();
 	}
 
@@ -148,12 +150,12 @@ export default class AddDataScreen extends React.Component {
 										style={{ width: "95%" }}
 										onSelect={(index) => {
 											this.setState({selectedItemIndex: index});
-											this.setState({selectedItem: items[index.row]});
+											this.setState({selectedItem: Items[index.row]});
 										}} >
 
 
 										{
-											items.map((item, index) => (
+											Items.map((item, index) => (
 												<SelectItem key={index} title={item} />
 											))
 										}

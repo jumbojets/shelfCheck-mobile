@@ -33,12 +33,6 @@ export default function LinksScreen() {
             label="Privacy Policy"
             onPress={() => WebBrowser.openBrowserAsync('https://www.shelfcheck.io/privacy')}
           />
-
-          <OptionButton
-            icon="md-heart-empty"
-            label="Buy us a coffee"
-            onPress={() => Linking.openURL('https://www.shelfcheck.io/coffee')}
-          />
         </View>
       </ImageBackground>
     </View>

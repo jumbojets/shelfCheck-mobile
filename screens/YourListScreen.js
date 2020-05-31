@@ -8,6 +8,7 @@ import { Feather } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ViewPager from '@react-native-community/viewpager';
 import { ScrollView } from 'react-native-gesture-handler';
+import Modal from 'react-native-modal';
 
 import AddDataScreen from './AddDataScreen';
 import StoreScreen from './StoreScreen';
@@ -36,16 +37,18 @@ function AutoRefreshWrapper(props) {
 
 	return (
 		<View style={{flex:1}}>
-			{isFocused
-				? <View style={{flex:1}}><YourListScreen navigation={props.navigation} /></View>
-				: <View />
-			}
+			<View style={{flex:1}}>
+				{isFocused
+					? <View style={{flex:1}}><YourListScreen navigation={props.navigation} /></View>
+					: <View />
+				}
+			</View>
 		</View>
 	)
 }
 
 class YourListScreen extends React.Component {
-	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0};
+	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false, modelItemsRefresh: 0};
 
 	clearList = () => {
 		Items.forEach(async (item, index) => {
@@ -116,6 +119,32 @@ class YourListScreen extends React.Component {
 		}
 	}
 
+	toggleItem = async (item) => {
+		var newItems = this.state.userItems;
+		var newStates = this.state.itemStates;
+		try {
+			if (item in this.state.itemStates) {
+				const indexToRemove = this.state.userItems.indexOf(item);
+				newItems.splice(indexToRemove, 1);
+				this.setState({ userItems: newItems })
+				delete newStates[item];
+				this.setState({ itemStates: newStates })
+				await AsyncStorage.removeItem(item);
+			} else {
+				newItems.push(item);
+				newItems.sort();
+				this.setState({ userItems: newItems })
+				newStates[item] = "true";
+				this.setState({ itemStates: newStates })
+				await AsyncStorage.setItem(item, "true")
+			}
+		} catch (error) {
+			Alert.alert("Error", error);
+		}
+		const nextKey = (this.state.modelItemsRefresh + 1) % 2;
+		this.setState( {modelItemsRefresh: nextKey}, () => console.log(nextKey) );
+	}
+
 	componentDidMount = async () => {
 		await this.getItemListAndStates();
 
@@ -156,13 +185,43 @@ class YourListScreen extends React.Component {
 		return (
 			<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
 				<View style={styles.main}>
+
+
+					<Modal isVisible={this.state.modalVisible} onBackdropPress={() => {this.setState({modalVisible: false})}} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
+						<View style={styles.modalContainer}>
+							<View style={styles.modalTitleContainer}>
+								<Text style={styles.modalTitle}>Edit your list</Text>
+
+								<TouchableOpacity style={styles.modalBackButton} onPress={() => {this.setState({modalVisible: false})} }>
+									<Icon name="remove" size={30} color={"#fff"} />
+								</TouchableOpacity>
+							</View>
+							<ScrollView key={this.state.modelItemsRefresh} style={{flex:1}}>
+							{
+								Items.map((item, index) => (
+									<TouchableOpacity
+										key={index}
+										style={[styles.modalItemContainer, {"backgroundColor": item in this.state.itemStates? "#66c1e0" : "#fff"}]}
+										onPress={() => this.toggleItem(item)}>
+										<Text style={[styles.modalItemText, 
+													  {color: item in this.state.itemStates? "#fff": "#66c1e0"}]}>{item}</Text>
+										<View />
+									</TouchableOpacity>
+								))
+							}
+							</ScrollView>
+				        </View>
+					</Modal>
+
+
+
 					<View style={styles.container}>
 						<View style={styles.titleRow}>
 							<Text style={styles.titleText}>Your List</Text>
 							{
 								this.state.userItems.length !== 0 ?
-								<TouchableOpacity style={styles.clearListButton} onPress={this.pressClearList}>
-									<Text style={styles.clearText}>Clear list</Text>
+								<TouchableOpacity style={styles.clearListButton} onPress={() => this.setState({modalVisible: true})}>
+									<Text style={styles.clearText}>Edit list</Text>
 								</TouchableOpacity>
 								: <View />
 							}
@@ -334,6 +393,75 @@ const styles = StyleSheet.create({
 		shadowRadius: 4.65,
 		shadowOpacity: 0.25,
 		elevation: 7,
+	},
+	modalContainer: {
+		backgroundColor:"white",
+		width: Dimensions.get("window").width*0.90,
+		height: Dimensions.get("window").height*0.60,
+		borderRadius: 30,
+		backgroundColor: "#7b85f4",
+		paddingTop: "5%",
+		paddingHorizontal: "5%",
+    },
+    modalTitleContainer: {
+	    flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		marginBottom: 15,
+	},
+	modalTitle: {
+		fontWeight: "bold",
+		fontSize: 25,
+		color: "#fff",
+	},
+	modalButton: {
+		width: "100%",
+		backgroundColor: "#fff3",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-around",
+		height: 60,
+		marginVertical: 5,
+		borderRadius: 25,
+		shadowColor: "#000",
+	    shadowOffset: {
+	      width: 0,
+	      height: 3,
+	    },
+	    shadowRadius: 3,
+	    shadowOpacity: 0.2,
+	    elevation: 7,
+	},
+	modalBackButton: {
+		height: 40,
+		width: 40,
+		borderRadius: 25,
+		backgroundColor: "#66c1e0",
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 3,
+		shadowOpacity: 0.2,
+		elevation: 7,
+	},
+	modalItemContainer: {
+		width: "100%",
+		marginVertical: 6,
+		height: "8%",
+		borderRadius: 15,
+		justifyContent: "space-between",
+		flexDirection: "row",
+		alignItems: "center",
+		paddingHorizontal: "5%",
+	},
+	modalItemText: {
+		fontWeight: "bold",
+		fontSize: 17,
 	},
 	titleRow: {
 		flexDirection: "row",

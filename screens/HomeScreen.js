@@ -31,7 +31,7 @@ export default function HomePage() {
   );
 }
 
-export function HomePageScreen({ navigation }) {
+export function HomePageScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [itemCategory, setItemCategory] = React.useState("Nutrition");
   const [modalColor, setModalColor] = React.useState("");
@@ -77,7 +77,8 @@ export function HomePageScreen({ navigation }) {
                   onPress={() => {
                     setModalVisible(false);
                     navigation.push('ItemScreen', {
-                      item_name: item
+                      item_name: item,
+                      item_category: itemCategory,
                     })
                   }}
                   >
@@ -291,8 +292,8 @@ const styles = StyleSheet.create({
 });
 
 const itemsByCategory = {
-  Nutrition: ["Bread", "Milk", "Eggs", "Bottled Water", "Ground Beef", "Flour"],
-  Health: ["Toilet Paper", "Diapers", "Masks"],
-  Cleaning: ["Disinfectant Wipes", "Hand Sanitizer", "Hand Soap", "Paper Towels", "Disinfectant Spray", "Detergent"],
+  Nutrition: ["Bread", "Milk", "Eggs", "Bottled Water", "Ground Beef", "Flour", "Yeast"],
+  Health: ["Toilet Paper", "Diapers", "Masks", "Tissues"],
+  Cleaning: ["Disinfectant Wipes", "Hand Sanitizer", "Hand Soap", "Paper Towels", "Disinfectant Spray"],
   Power: ["Batteries", "Flashlights"],
 }

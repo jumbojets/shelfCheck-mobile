@@ -7,12 +7,13 @@ import GetCurrentLocation from '../api/GetCurrentLocation';
 import Items from '../constants/Items';
 
 export default class ItemScreen extends React.Component {
-	state = { contents: "none", loading: true, item_name: "", addedToList: false, isListEmpty: true };
+	state = { contents: "none", loading: true, item_name: "", item_category: "", addedToList: false, isListEmpty: true };
 
 	async componentDidMount() {
-		const { item_name } = this.props.route.params;
+		const { item_name, item_category } = this.props.route.params;
 
 		this.setState({item_name: item_name});
+		this.setState({item_category: item_category});
 
 		try {
 			const value = await AsyncStorage.getItem(item_name);
@@ -143,7 +144,7 @@ export default class ItemScreen extends React.Component {
 				<View style={styles.container}>
 					<View style={styles.titleContainer}>
 						<Text style={styles.titleText}>{this.state.item_name}</Text>
-						<TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+						<TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('MainScreen', { prevCategory: this.state.item_category })}>
 			            	<Icon name="arrow-left" size={30} color={"#fff"} />
 			            </TouchableOpacity>
 					</View>

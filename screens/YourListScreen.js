@@ -1,14 +1,14 @@
 import { Text, View, StyleSheet, ImageBackground, TouchableOpacity, Alert, AsyncStorage, Linking, Platform, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Feather } from '@expo/vector-icons';
 import * as React from 'react';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Feather } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ViewPager from '@react-native-community/viewpager';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
+
 
 import AddDataScreen from './AddDataScreen';
 import StoreScreen from './StoreScreen';
@@ -48,7 +48,7 @@ function AutoRefreshWrapper(props) {
 }
 
 class YourListScreen extends React.Component {
-	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false, modelItemsRefresh: 0};
+	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false};
 
 	clearList = () => {
 		Items.forEach(async (item, index) => {
@@ -141,8 +141,6 @@ class YourListScreen extends React.Component {
 		} catch (error) {
 			Alert.alert("Error", error);
 		}
-		const nextKey = (this.state.modelItemsRefresh + 1) % 2;
-		this.setState( {modelItemsRefresh: nextKey}, () => console.log(nextKey) );
 	}
 
 	componentDidMount = async () => {
@@ -191,25 +189,40 @@ class YourListScreen extends React.Component {
 						<View style={styles.modalContainer}>
 							<View style={styles.modalTitleContainer}>
 								<Text style={styles.modalTitle}>Edit your list</Text>
-
-								<TouchableOpacity style={styles.modalBackButton} onPress={() => {this.setState({modalVisible: false})} }>
-									<Icon name="remove" size={30} color={"#fff"} />
+							</View>
+							<Text style={styles.storeDistance}>Click an item to add or remove it from your list</Text>
+							<View style={{flex: 1, marginTop: 5}}>
+								<ScrollView>
+								{
+									Items.map((item, index) => (
+										<TouchableOpacity
+											key={index}
+											state={this.state.itemStates[item]}
+											style={[styles.modalItemContainer, {"backgroundColor": item in this.state.itemStates? "#7b85f4" : "#fff"}]}
+											onPress={() => this.toggleItem(item)}>
+											<Text style={[styles.modalItemText, 
+														  {color: item in this.state.itemStates? "#fff": "#66c1e0"}]}>{item}</Text>
+											<View key={this.state.itemStates[item]} style={[styles.checkButton, {"backgroundColor": item in this.state.itemStates? "#66c1e0": "0"}]}>
+												{
+													item in this.state.itemStates?
+													<Icon name="check" size={23} color={"#fff"} />
+													:
+													<Feather name="plus" size={30} color="#66c1e0" />
+												}
+											</View>
+										</TouchableOpacity>
+									))
+								}
+								</ScrollView>
+							</View>
+							<View style={styles.navigateRowContainer}>
+								<TouchableOpacity style={[styles.navigateButton, {width: "40%", backgroundColor: "#4cd6de"}]} onPress={() => this.setState({modalVisible: false})}>
+									<Text style={{color: "#fff", fontWeight: "bold", fontSize: 17}}>I'm done!</Text>
+								</TouchableOpacity>
+								<TouchableOpacity style={[styles.navigateButton, {width: "40%"}]} onPress={() => this.pressClearList()}>
+									<Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 17}}>Clear list</Text>
 								</TouchableOpacity>
 							</View>
-							<ScrollView key={this.state.modelItemsRefresh} style={{flex:1}}>
-							{
-								Items.map((item, index) => (
-									<TouchableOpacity
-										key={index}
-										style={[styles.modalItemContainer, {"backgroundColor": item in this.state.itemStates? "#66c1e0" : "#fff"}]}
-										onPress={() => this.toggleItem(item)}>
-										<Text style={[styles.modalItemText, 
-													  {color: item in this.state.itemStates? "#fff": "#66c1e0"}]}>{item}</Text>
-										<View />
-									</TouchableOpacity>
-								))
-							}
-							</ScrollView>
 				        </View>
 					</Modal>
 
@@ -218,13 +231,9 @@ class YourListScreen extends React.Component {
 					<View style={styles.container}>
 						<View style={styles.titleRow}>
 							<Text style={styles.titleText}>Your List</Text>
-							{
-								this.state.userItems.length !== 0 ?
-								<TouchableOpacity style={styles.clearListButton} onPress={() => this.setState({modalVisible: true})}>
-									<Text style={styles.clearText}>Edit list</Text>
-								</TouchableOpacity>
-								: <View />
-							}
+							<TouchableOpacity style={styles.editListButton} onPress={() => this.setState({modalVisible: true})}>
+								<Text style={styles.clearText}>Edit list</Text>
+							</TouchableOpacity>
 						</View>
 
 						{
@@ -237,7 +246,7 @@ class YourListScreen extends React.Component {
 								<View><Text style={styles.captionText}>There aren't reports for items on your list. Go out and add some!</Text></View>
 							}
 
-								<ViewPager style={styles.viewPager} initialPage={0} /*showPageIndicator={true}*/ >
+								<ViewPager style={styles.viewPager} initialPage={0} >
 
 								<View key={0}>
 									<View style={[styles.storeContainer, {backgroundColor: "#68ADEB"}]}>
@@ -395,11 +404,10 @@ const styles = StyleSheet.create({
 		elevation: 7,
 	},
 	modalContainer: {
-		backgroundColor:"white",
 		width: Dimensions.get("window").width*0.90,
-		height: Dimensions.get("window").height*0.60,
+		height: Dimensions.get("window").height*0.70,
 		borderRadius: 30,
-		backgroundColor: "#7b85f4",
+		backgroundColor: "#68ADEB",
 		paddingTop: "5%",
 		paddingHorizontal: "5%",
     },
@@ -451,9 +459,9 @@ const styles = StyleSheet.create({
 	},
 	modalItemContainer: {
 		width: "100%",
-		marginVertical: 6,
-		height: "8%",
-		borderRadius: 15,
+		marginVertical: 5,
+		height: 57,
+		borderRadius: 30,
 		justifyContent: "space-between",
 		flexDirection: "row",
 		alignItems: "center",
@@ -462,6 +470,14 @@ const styles = StyleSheet.create({
 	modalItemText: {
 		fontWeight: "bold",
 		fontSize: 17,
+	},
+	checkButton: {
+		height: 35,
+		width: 35,
+		borderRadius: 17.5,
+		alignItems: "center",
+		flexDirection: "column",
+		justifyContent: "space-around",
 	},
 	titleRow: {
 		flexDirection: "row",
@@ -473,7 +489,7 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		color: "#52c4e3",
 	},
-	clearListButton: {
+	editListButton: {
 		backgroundColor: "#68ADEB",
 		borderRadius: 25,
 		height: "110%",

@@ -141,7 +141,7 @@ export function HomePageScreen({ navigation, route }) {
               start = {[0, 0.5]}
               end = {[1, 0.5]}
             >
-              <Text style={styles.addDataText}>Add Inventory Data</Text>
+              <Text style={styles.addDataText}>Report what's in stock</Text>
 
               <Feather name="plus" size={43} color="#fff" />
             
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   addDataText: {
     color: "#fff",
-    fontSize: 23,
+    fontSize: 21,
     fontWeight: "bold",
     textAlign: "center",
     textAlignVertical: "center",

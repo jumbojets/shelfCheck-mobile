@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Platform, StatusBar, StyleSheet, View, Alert, AsyncStorage, Linking } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import Constants  from 'expo-constants';
+import { Notifications } from 'expo';
 
 import useCachedResources from './hooks/useCachedResources';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
@@ -93,6 +94,24 @@ export default function App(props) {
   }
 
   const isLoadingComplete = useCachedResources();
+
+
+  // test notification
+  const localNotification = {
+    title: 'Title',
+    body: 'Here is a little bit of body text!'
+  };
+
+  const schedulingOptions = {
+    time: (new Date()).getTime() + 10000
+  }
+
+  // Notifications show only when app is not active.
+  // (ie. another app being used or device's screen is locked)
+  Notifications.scheduleLocalNotificationAsync(
+    localNotification, schedulingOptions
+  );
+
 
   if (!isLoadingComplete) {
     return null;

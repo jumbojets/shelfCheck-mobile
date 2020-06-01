@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
 import * as Location from 'expo-location';
 import { Alert, AsyncStorage } from 'react-native';
+import * as Permissions from 'expo-permissions';
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
@@ -34,11 +35,13 @@ export default function useCachedResources() {
 
     const getAndSetLocation = async () => {
 
-      let { status } = await Location.requestPermissionsAsync();
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
 
       if (status !== "granted") {
         Alert.alert("We need to borrow your location!", "To properly determine the stores around you, we need to have access to your location. Please go to privacy settings and allow us to access it.");
       }
+
+      await Permissions.askAsync(Permissions.NOTIFICATIONS);
 
       let location = await Location.getCurrentPositionAsync();
 

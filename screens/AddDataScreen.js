@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, TouchableOpacity, Alert, Picker, AsyncStorage } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Alert, Picker, AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -97,112 +97,116 @@ export default class AddDataScreen extends React.Component {
 	render() {
 		const { navigation } = this.props;
 		return (
-			<View style={styles.main}>
-				<View style={styles.container}>
-					<LinearGradient style={styles.container2}
-						colors = {['#74d3dc', "#7e84f3"]}
-						start = {[0, 0.5]}
-	              		end = {[1, 0.5]}>
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+				<View style={styles.main}>
+					<View style={styles.container}>
+						<LinearGradient style={styles.container2}
+							colors = {['#74d3dc', "#7e84f3"]}
+							start = {[0, 0.5]}
+		              		end = {[1, 0.5]}>
 
-							<View>
+								<View>
 
-								<View style={styles.topRow}>
+									<View style={styles.topRow}>
 
-									<Text style={styles.title}>Add Inventory Data</Text>
+										<Text style={styles.title}>Add Inventory Data</Text>
 
-									<TouchableOpacity style={styles.backbutton} onPress={() => navigation.goBack()}>
-										<Icon name="arrow-left" size={30} color={"#ffff"} />
-									</TouchableOpacity>
+										<TouchableOpacity style={styles.backbutton} onPress={() => navigation.goBack()}>
+											<Icon name="arrow-left" size={30} color={"#ffff"} />
+										</TouchableOpacity>
+
+									</View>
+
+									<Text style={styles.description}>Lend a hand by estimating what's in stock</Text>
+								</View>
+
+								<View style={styles.formContainer}>
+
+									<View style={styles.selectContainer}>
+
+										<Select
+											value={this.state.selectedStore}
+											placeholder="Select a store"
+											selectedIndex={this.state.selectedStoreIndex}
+											style={{ width: "95%" }}
+											onSelect={(index) => {
+												this.setState({selectedStoreIndex: index});
+												this.setState({selectedStore: this.state.contents[index.row].name})
+											}} >
+
+											{
+												this.state.contents.map((item, index) => (
+													<SelectItem key={index} title={item.name + " | " + item.distance.toFixed(1) + " miles"} />
+												))
+											}
+
+										</Select>
+
+									</View>
+
+									<View style={styles.selectContainer}>
+
+										<Select
+											placeholder="Select an item"
+											selectedIndex={this.state.selectedItemIndex}
+											disabled={this.state.itemPickerLocked}
+											value={this.state.selectedItem}
+											style={{ width: "95%" }}
+											onSelect={(index) => {
+												this.setState({selectedItemIndex: index});
+												this.setState({selectedItem: Items[index.row]});
+											}} >
+
+
+											{
+												Items.map((item, index) => (
+													<SelectItem key={index} title={item} />
+												))
+											}
+
+										</Select>
+
+									</View>
+
+									<View style={styles.captionedContainer}>
+
+										<Text style={styles.caption}>Is it in stock?</Text>
+
+										<Toggle checked={this.state.checked} onChange={() => this.setState({checked: !this.state.checked})} />
+
+									</View>
+
+									
+
+									<View style={styles.captionedContainer}>
+										<Text style={styles.caption}>Approximate quantity?</Text>
+										<Input
+											placeholder='----'
+											selectTextOnFocus={true}
+											keyboardType='number-pad'
+											disabled={!this.state.checked}
+											value={this.state.quantity}
+											onChangeText={this.changeQuantity}
+											size="medium"
+										/>
+									</View>
+
 
 								</View>
 
-								<Text style={styles.description}>Lend a hand by estimating what's in stock</Text>
-							</View>
-
-							<View style={styles.formContainer}>
-
-								<View style={styles.selectContainer}>
-
-									<Select
-										value={this.state.selectedStore}
-										placeholder="Select a store"
-										selectedIndex={this.state.selectedStoreIndex}
-										style={{ width: "95%" }}
-										onSelect={(index) => {
-											this.setState({selectedStoreIndex: index});
-											this.setState({selectedStore: this.state.contents[index.row].name})
-										}} >
-
-										{
-											this.state.contents.map((item, index) => (
-												<SelectItem key={index} title={item.name + " | " + item.distance.toFixed(1) + " miles"} />
-											))
-										}
-
-									</Select>
-
-								</View>
-
-								<View style={styles.selectContainer}>
-
-									<Select
-										placeholder="Select an item"
-										selectedIndex={this.state.selectedItemIndex}
-										disabled={this.state.itemPickerLocked}
-										value={this.state.selectedItem}
-										style={{ width: "95%" }}
-										onSelect={(index) => {
-											this.setState({selectedItemIndex: index});
-											this.setState({selectedItem: Items[index.row]});
-										}} >
+							<View style={{height:"5%"}} />
 
 
-										{
-											Items.map((item, index) => (
-												<SelectItem key={index} title={item} />
-											))
-										}
+							<TouchableOpacity style={styles.submitButton} onPress={this.submitData}>
 
-									</Select>
+								<Text style={styles.submitText}>Submit</Text>
 
-								</View>
-
-								<View style={styles.captionedContainer}>
-
-									<Text style={styles.caption}>Is it in stock?</Text>
-
-									<Toggle checked={this.state.checked} onChange={() => this.setState({checked: !this.state.checked})} />
-
-								</View>
-
-								
-
-								<View style={styles.captionedContainer}>
-									<Text style={styles.caption}>Approximate quantity?</Text>
-									<Input
-										placeholder='----'
-										disabled={!this.state.checked}
-										value={this.state.quantity}
-										onChangeText={this.changeQuantity}
-										size="medium"
-									/>
-								</View>
-
-
-							</View>
-
-						<View style={{height:"5%"}} />
-
-
-						<TouchableOpacity style={styles.submitButton} onPress={this.submitData}>
-
-							<Text style={styles.submitText}>Submit</Text>
-
-						</TouchableOpacity>
-						
-					</LinearGradient>
+							</TouchableOpacity>
+							
+						</LinearGradient>
+					</View>
 				</View>
-			</View>
+			</TouchableWithoutFeedback>
 		)
 	}
 }

@@ -143,12 +143,13 @@ class YourListScreen extends React.Component {
 		}
 	}
 
-	componentDidMount = async () => {
-		await this.getItemListAndStates();
+	closeModal = async () => {
+		this.setState({ modalVisible: false });
+		await this.resetContents();
+	}
 
+	resetContents = async () => {
 		const { latitude, longitude } = await GetCurrentLocation();
-
-		const { navigation } = this.props;
 
 		var c = await GetClosestStoresMultipleItems({
 			items: this.state.userItems,
@@ -168,6 +169,12 @@ class YourListScreen extends React.Component {
 
 
 		this.setState({ contents: c });
+	}
+
+	componentDidMount = async () => {
+		await this.getItemListAndStates();
+		await this.resetContents();
+		
 		this.setState({ loading: false });
 	}
 
@@ -185,13 +192,13 @@ class YourListScreen extends React.Component {
 				<View style={styles.main}>
 
 
-					<Modal isVisible={this.state.modalVisible} onBackdropPress={() => {this.setState({modalVisible: false})}} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
+					<Modal isVisible={this.state.modalVisible} onBackdropPress={() => this.closeModal()} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
 						<View style={styles.modalContainer}>
 							<View style={styles.modalTitleContainer}>
 								<Text style={styles.modalTitle}>Edit your list</Text>
 							</View>
 							<Text style={styles.storeDistance}>Click an item to add or remove it from your list</Text>
-							<View style={{flex: 1, marginTop: 5}}>
+							<View style={{flex: 1, marginTop: 10}}>
 								<ScrollView>
 								{
 									Items.map((item, index) => (
@@ -216,7 +223,7 @@ class YourListScreen extends React.Component {
 								</ScrollView>
 							</View>
 							<View style={styles.navigateRowContainer}>
-								<TouchableOpacity style={[styles.navigateButton, {width: "40%", backgroundColor: "#4cd6de"}]} onPress={() => this.setState({modalVisible: false})}>
+								<TouchableOpacity style={[styles.navigateButton, {width: "40%", backgroundColor: "#4cd6de"}]} onPress={() => this.closeModal()}>
 									<Text style={{color: "#fff", fontWeight: "bold", fontSize: 17}}>I'm done!</Text>
 								</TouchableOpacity>
 								<TouchableOpacity style={[styles.navigateButton, {width: "40%"}]} onPress={() => this.pressClearList()}>

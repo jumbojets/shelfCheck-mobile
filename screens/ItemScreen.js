@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Text, StyleSheet, View, TouchableOpacity, AsyncStorage, Alert, ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import * as Haptics from 'expo-haptics';
 import GetClosestStoresSingleItem from '../api/GetClosestStoresSingleItem';
 import GetCurrentLocation from '../api/GetCurrentLocation';
 import Items from '../constants/Items';
@@ -117,6 +117,7 @@ export default class ItemScreen extends React.Component {
 			Alert.alert("Error", "Unable to add the item." + error)
 		}
 
+		Haptics.impactAsync();
 	};
 
 	makeBlankItems = () => {

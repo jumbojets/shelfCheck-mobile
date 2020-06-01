@@ -8,6 +8,7 @@ import GetClosestStores from '../api/GetClosestStores';
 import AppendCrowdsourcedData from '../api/AppendCrowdsourcedData';
 import GetCurrentLocation from '../api/GetCurrentLocation';
 import Items from '../constants/Items';
+import * as Haptics from 'expo-haptics';
 
 import { Select, SelectItem, Toggle, Input } from '@ui-kitten/components';
 
@@ -87,6 +88,8 @@ export default class AddDataScreen extends React.Component {
 		} catch {
 			Alert.alert("Error", "Problem setting state as done")
 		}
+
+		Haptics.impactAsync();
 		
 		navigation.goBack();
 	}

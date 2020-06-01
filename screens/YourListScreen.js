@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ViewPager from '@react-native-community/viewpager';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
-
+import * as Haptics from 'expo-haptics';
 
 import AddDataScreen from './AddDataScreen';
 import StoreScreen from './StoreScreen';
@@ -112,6 +112,7 @@ class YourListScreen extends React.Component {
 	submitData = (storeName, itemName) => {
 		const { navigation } = this.props;
 		return () => {
+			Haptics.impactAsync();
 			navigation.push('AddDataScreen', {
 				defaultStore: storeName,
 				defaultItem: itemName,
@@ -141,6 +142,7 @@ class YourListScreen extends React.Component {
 		} catch (error) {
 			Alert.alert("Error", error);
 		}
+		Haptics.impactAsync();
 	}
 
 	closeModal = async () => {

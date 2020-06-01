@@ -8,6 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { MaterialCommunityIcons, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 
 import LandingPage from '../components/LandingPage';
 import { MonoText } from '../components/StyledText';
@@ -146,7 +147,7 @@ export function HomePageScreen({ navigation, route }) {
           </View>
 
           <TouchableOpacity
-            onPress={() => navigation.push('AddDataScreen', {defaultStore: "", defaultItem: ""})}
+            onPress={() => {Haptics.impactAsync(); navigation.push('AddDataScreen', {defaultStore: "", defaultItem: ""})}}
             style = {styles.addDataButtonContainer}
           >
 

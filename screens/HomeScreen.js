@@ -1,7 +1,7 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert, Dimensions } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert, AsyncStorage, Dimensions } from 'react-native';
 import Modal from 'react-native-modal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,7 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { MaterialCommunityIcons, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
 
-
+import LandingPage from '../components/LandingPage';
 import { MonoText } from '../components/StyledText';
 
 import AddDataScreen from './AddDataScreen';
@@ -35,8 +35,23 @@ export function HomePageScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [itemCategory, setItemCategory] = React.useState("Nutrition");
   const [modalColor, setModalColor] = React.useState("");
+  var landingVisible = false;
+
+  try {
+    const value = AsyncStorage.getItem("seenLanding");
+    if (value === null) {
+      landingVisible = true;
+    }
+  } catch {
+    Alert.alert("Error", "error finding if have seen landing page");
+  }
+
 
   return (
+    <View>
+
+      <LandingPage isVisible={landingVisible} />
+
       <View style={styles.container}>
       <ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
         <View style={styles.welcomeContainer}>
@@ -154,8 +169,7 @@ export function HomePageScreen({ navigation, route }) {
 
       </ImageBackground>
       </View>
-
-      
+    </View>
   );
 }
 

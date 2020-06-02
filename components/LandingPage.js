@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Modal from 'react-native-modal';
-import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage, StyleSheet, Dimensions, Alert, Image } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage, StyleSheet, Dimensions, Alert, Image, ImageBackground } from 'react-native';
 import UserOperations from '../api/UserOperations';
 import { AntDesign } from '@expo/vector-icons'; 
 
@@ -70,29 +70,32 @@ export default function LandingPage(props) {
 							emailVisible?
 							<Text style={styles.title}>Consider joining our community</Text>
 							:
-							<Text style={[styles.title]}>Hey, welcome to shelfCheck!</Text>
+							<Text style={[styles.title]}>Welcome to shelfCheck!</Text>
 						}
 					</View>
 
 					{
 						emailVisible?
-						<View style={[styles.instructions, {paddingHorizontal: "3%", justifyContent: "space-around"}]}>
-							<View style={styles.emailForm} intensity={1}>
-								<View style={{flexDirection: "row"}}>
-									<Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> Track your impact: see how many shoppers you helped by reporting</Text>
+						<View style={[styles.instructions, {paddingHorizontal: "3%", justifyContent: "space-around", height: "60%", marginTop: "-10%"}]}>
+							<View style={styles.emailForm}>
+								<View style={{flexDirection: "column", justifyContent: "space-around", alignItems: "center", height: "25%"}}>
+									<Image resizeMode="contain" source={require('../assets/images/community.png')} style={{width: '100%', height: '100%'}} />
 								</View>
 								<View style={{flexDirection: "row"}}>
-									<Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> Climb your local leaderboard every time you contribute</Text>
+									<Text style={styles.modalCaption}>• </Text><Text style={styles.modalCaption}>Track your impact: see how many shoppers you helped by reporting</Text>
 								</View>
 								<View style={{flexDirection: "row"}}>
-									<Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> It’s free, secure and completely optional</Text>
+									<Text style={styles.modalCaption}>• </Text><Text style={styles.modalCaption}>Climb your local leaderboard every time you contribute</Text>
+								</View>
+								<View style={{flexDirection: "row"}}>
+									<Text style={styles.modalCaption}>• </Text><Text style={styles.modalCaption}>It’s free, secure and completely optional. Skip ahead if you want!</Text>
 								</View>
 								<TextInput
 									style={styles.emailInput}
-									placeholder="Email address"
+									placeholder="Optional email address"
 									keyboardType="email-address"
 									textContentType="emailAddress"
-									placeholderTextColor="#fff"
+									placeholderTextColor="#7c49fd"
 									selectionColor="#4cd6d3"
 									onBlur={() => checkValidEmail(email)}
 									onChangeText={text => setEmail(text)}
@@ -199,32 +202,25 @@ const styles = StyleSheet.create({
 	},
 	emailForm: {
 		width: "100%",
-		backgroundColor: "#7897f4",
-		height: "90%",
+		height: "100%",
 		borderRadius: 30,
-		paddingHorizontal: 30,
+		paddingHorizontal: 0,
 		paddingVertical: 5,
 		flexDirection: "column",
 		justifyContent: "space-evenly",
-		shadowOffset: {
-			width: 0,
-			height: 4,
-		},
-		shadowRadius: 4.7,
-		shadowOpacity: 0.3,
-		elevation: 8,
 	},
 	emailInput: {
-		height: 40,
-		borderRadius: 20,
-		borderColor: "#fff",
+		height: Dimensions.get("window").height * 0.07,
+		borderRadius: Dimensions.get("window").height * 0.035,
+		borderColor: "#7c49fd",
 		borderWidth: 2,
 		paddingHorizontal: 20,
-		color: "#fff",
+		color: "#7c49fd",
+		fontSize: Dimensions.get("window").height * 0.02
 	},
 	getStartedButton: {
-		height: 62.72,
-		width: "75%",
+		height: Dimensions.get("window").height * 0.07,
+		width: "95%",
 		backgroundColor: "#7c49fd",
 		flexDirection: "column",
 		justifyContent: "space-around",
@@ -245,8 +241,9 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	modalCaption: {
-		color: "#fff",
+		color: "#7c49fd",
 		fontSize: 18,
+		// fontSize: Dimensions.get("window").height * 0.02,
 		marginVertical: 2,
 		fontWeight: "bold",
 	},

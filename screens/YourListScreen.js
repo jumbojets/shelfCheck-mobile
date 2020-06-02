@@ -148,6 +148,11 @@ class YourListScreen extends React.Component {
 	closeModal = async () => {
 		this.setState({ modalVisible: false });
 		await this.resetContents();
+		try {
+			await AsyncStorage.setItem("lastToggleTime", Date.now().toString());
+		} catch {
+			Alert.alert("Error", "error setting the last toggle time")
+		}
 	}
 
 	resetContents = async () => {

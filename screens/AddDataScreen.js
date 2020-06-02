@@ -8,6 +8,7 @@ import GetClosestStores from '../api/GetClosestStores';
 import AppendCrowdsourcedData from '../api/AppendCrowdsourcedData';
 import GetCurrentLocation from '../api/GetCurrentLocation';
 import Items from '../constants/Items';
+import UserOperations from '../api/UserOperations';
 import * as Haptics from 'expo-haptics';
 
 import { Select, SelectItem, Toggle, Input } from '@ui-kitten/components';
@@ -88,6 +89,18 @@ export default class AddDataScreen extends React.Component {
 		} catch {
 			Alert.alert("Error", "Problem setting state as done")
 		}
+
+
+		try {
+			const value = await AsyncStorage.getItem("email");
+
+			if (value !== null) {
+				await UserOperations({action: "record", email: value.toLowerCase()});
+			}
+		} catch {
+			Alert.alert("Error", "Error getting local email");
+		}
+
 
 		Haptics.impactAsync();
 		

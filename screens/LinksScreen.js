@@ -48,7 +48,7 @@ export default function LinksScreen() {
       Alert.alert("Not a valid email!", "Leave input empty if you do not want to share one.");
     }
   };
-  
+
   const removeEmail = async () => {
     try {
       await AsyncStorage.removeItem("email");
@@ -130,8 +130,19 @@ export default function LinksScreen() {
           <View style={styles.modalTitleContainer}>
             <Text style={styles.modalTitle}>Your email</Text>
           </View>
-          <Text style={styles.modalCaption}>Consider signing up to join the community and track your impact: see how many shoppers you helped by reporting &
-            climb your local leaderboard every time you contribute. It’s free, secure and completely optional</Text>
+          <View style={{flexDirection: "row"}}>
+            <Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> Consider signing up to join the community</Text>
+          </View>
+          <View style={{flexDirection: "row"}}>
+            <Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> Track your impact: see how many shoppers you helped by reporting</Text>
+          </View>
+          <View style={{flexDirection: "row"}}>
+            <Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> Climb your local leaderboard every time you contribute</Text>
+          </View>
+          <View style={{flexDirection: "row"}}>
+            <Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> It’s free, secure and completely optional</Text>
+          </View>
+
           <View style={styles.emailForm} intensity={1}>
             <TextInput
               style={styles.emailInput}
@@ -146,10 +157,10 @@ export default function LinksScreen() {
           </View>
           <View style={styles.doneRowContainer}>
             <TouchableOpacity style={[styles.doneButton, {width: "40%", backgroundColor: "#4cd6de"}]} onPress={() => closeModal()}>
-              <Text style={{color: "#fff", fontWeight: "bold", fontSize: 17}}>I'm done!</Text>
+              <Text style={{color: "#fff", fontWeight: "bold", fontSize: 16}}>I'm done!</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.doneButton, {width: "40%"}]} onPress={() => removeConfirmation()}>
-              <Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 17}}>Remove</Text>
+              <Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 16}}>Unsubscribe</Text>
             </TouchableOpacity>
           </View>
             </View>
@@ -269,13 +280,14 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: Dimensions.get("window").width*0.90,
-    height: 313.59999999999997,
+    height: 330,
     borderRadius: 30,
     backgroundColor: "#68ADEB",
     paddingTop: "5%",
     paddingHorizontal: "5%",
     flexDirection: "column",
     justifyContent: "space-between",
+    bottom: "15%",
   },
   modalTitleContainer: {
       flexDirection: "row",
@@ -290,8 +302,10 @@ const styles = StyleSheet.create({
   modalCaption: {
     color: "#fff",
     fontSize: 15,
+    marginVertical: -8,
   },
   emailForm: {
+    marginTop: 5,
     backgroundColor: "#fff",
     height: 50,
     borderRadius: 30,
@@ -322,8 +336,7 @@ const styles = StyleSheet.create({
   },
   doneButton: {
     backgroundColor: "#fff",
-    width: "48%",
-    paddingHorizontal: "5%",
+    paddingHorizontal: "0%",
     height: "100%",
     borderRadius: 25,
     alignItems: "center",

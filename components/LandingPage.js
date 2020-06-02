@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Modal from 'react-native-modal';
-import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage, StyleSheet, Dimensions, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage, StyleSheet, Dimensions, Alert, Image } from 'react-native';
 import UserOperations from '../api/UserOperations';
 import { AntDesign } from '@expo/vector-icons'; 
 
@@ -102,21 +102,27 @@ export default function LandingPage(props) {
 						:
 						<View style={styles.instructions}>
 							<View style={styles.explanation}>
-								<View style={[styles.iconHolder, {backgroundColor: "#4cd6d3"}]}></View>
+								<View style={styles.iconHolder}>
+									<Image source={require('../assets/images/landing-1.png')} style={{width: '80%', height: '80%'}} />
+								</View>
 								<View style={styles.textContainer}>
 									<Text style={styles.text}>Find the items you need at nearby stores</Text>
 								</View>
 							</View>
 
 							<View style={styles.explanation}>
-								<View style={[styles.iconHolder, {backgroundColor: "#7897f4"}]}></View>
+								<View style={styles.iconHolder}>
+									<Image source={require('../assets/images/landing-2.png')} style={{width: '80%', height: '80%'}} />
+								</View>
 								<View style={styles.textContainer}>
 									<Text style={styles.text}>See what's available at stores closest to you</Text>
 								</View>
 							</View>
 
 							<View style={styles.explanation}>
-								<View style={[styles.iconHolder, {backgroundColor: "#693ce1"}]}></View>
+								<View style={styles.iconHolder}>
+									<Image source={require('../assets/images/landing-3.png')} style={{width: '80%', height: '80%'}} />
+								</View>
 								<View style={styles.textContainer}>
 									<Text style={styles.text}>Help the community by reporting what's in stock</Text>
 								</View>
@@ -125,7 +131,7 @@ export default function LandingPage(props) {
 
 					}
 
-					<TouchableOpacity style={[styles.getStartedButton, {backgroundColor: emailVisible? "#7c49fd": "#4cd6d3"}]} onPress={() => {buttonPress()}}>
+					<TouchableOpacity style={[styles.getStartedButton, {backgroundColor: emailVisible? "#7c49fd": "#7c49fd"}]} onPress={() => {buttonPress()}}>
 						
 						{
 							emailVisible?
@@ -153,6 +159,7 @@ const styles = StyleSheet.create({
 	},
 	titleView: {
 		marginTop: 20,
+		paddingHorizontal: "7%",
 	},
 	title: {
 		fontSize: 35,
@@ -178,13 +185,9 @@ const styles = StyleSheet.create({
 		height: Dimensions.get("window").width * 0.33,
 		width: Dimensions.get("window").width * 0.33,
 		borderRadius: 70,
-		shadowOffset: {
-			width: 0,
-			height: 4,
-		},
-		shadowRadius: 4.7,
-		shadowOpacity: 0.3,
-		elevation: 8,
+		flexDirection: "column",
+		justifyContent: "space-around",
+		alignItems: "center",
 	},
 	textContainer: {
 		width: "55%",
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
 	emailForm: {
 		width: "100%",
 		backgroundColor: "#7897f4",
-		height: "80%",
+		height: "90%",
 		borderRadius: 30,
 		paddingHorizontal: 30,
 		paddingVertical: 5,
@@ -244,6 +247,7 @@ const styles = StyleSheet.create({
 	modalCaption: {
 		color: "#fff",
 		fontSize: 18,
-		marginVertical: 8,
+		marginVertical: 2,
+		fontWeight: "bold",
 	},
 });

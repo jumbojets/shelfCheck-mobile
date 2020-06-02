@@ -2,9 +2,11 @@ import * as React from 'react';
 import Modal from 'react-native-modal';
 import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage, StyleSheet, Dimensions, Alert } from 'react-native';
 import UserOperations from '../api/UserOperations';
+import { AntDesign } from '@expo/vector-icons'; 
 
 export default function LandingPage(props) {
 	const [modalVisible, setModalVisible] = React.useState(props.isVisible);
+	const [emailVisible, setEmailVisible] = React.useState(false);
 	const [email, setEmail] = React.useState("");
 
 	const closeLandingPage = async () => {
@@ -50,57 +52,94 @@ export default function LandingPage(props) {
 		}
 	};
 
+	const buttonPress = () => {
+		if (!emailVisible) {
+			setEmailVisible(true);
+			return;
+		}
+
+		closeLandingPage();
+	};
+
 	return (
-		<Modal isVisible={modalVisible} backdropOpacity={1} backdropColor={"#fff"} backdropTransitionOutTiming={750}>
-			<KeyboardAvoidingView style={styles.container} behavior={Platform.OS == "ios" ? "padding" : "padding"}>
-				<View style={styles.titleView}>
-					<Text style={styles.title}>Hey, welcome to shelfCheck!</Text>
-				</View>
-
-				<View style={styles.instructions}>
-
-					<View style={styles.explanation}>
-						<View style={[styles.iconHolder, {backgroundColor: "#4cd6d3"}]}></View>
-						<View style={styles.textContainer}>
-							<Text style={styles.text}>Find the items you need at nearby stores</Text>
-						</View>
+		<View>
+			<Modal isVisible={modalVisible} backdropOpacity={1} backdropColor={"#fff"} animationOut="slideOutLeft" backdropTransitionOutTiming={750}>
+				<KeyboardAvoidingView style={styles.container} behavior={Platform.OS == "ios" ? "padding" : "height"}>
+					<View style={styles.titleView}>
+						{
+							emailVisible?
+							<Text style={styles.title}>Consider joining our community</Text>
+							:
+							<Text style={[styles.title]}>Hey, welcome to shelfCheck!</Text>
+						}
 					</View>
 
-					<View style={styles.explanation}>
-						<View style={[styles.iconHolder, {backgroundColor: "#7897f4"}]}></View>
-						<View style={styles.textContainer}>
-							<Text style={styles.text}>See what's in stock at stores closest to you</Text>
+					{
+						emailVisible?
+						<View style={[styles.instructions, {paddingHorizontal: "3%", justifyContent: "space-around"}]}>
+							<View style={styles.emailForm} intensity={1}>
+								<View style={{flexDirection: "row"}}>
+									<Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> Track your impact: see how many shoppers you helped by reporting</Text>
+								</View>
+								<View style={{flexDirection: "row"}}>
+									<Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> Climb your local leaderboard every time you contribute</Text>
+								</View>
+								<View style={{flexDirection: "row"}}>
+									<Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> It’s free, secure and completely optional</Text>
+								</View>
+								<TextInput
+									style={styles.emailInput}
+									placeholder="Email address"
+									keyboardType="email-address"
+									textContentType="emailAddress"
+									placeholderTextColor="#fff"
+									selectionColor="#4cd6d3"
+									onBlur={() => checkValidEmail(email)}
+									onChangeText={text => setEmail(text)}
+								/>
+							</View>
 						</View>
-					</View>
+						:
+						<View style={styles.instructions}>
+							<View style={styles.explanation}>
+								<View style={[styles.iconHolder, {backgroundColor: "#4cd6d3"}]}></View>
+								<View style={styles.textContainer}>
+									<Text style={styles.text}>Find the items you need at nearby stores</Text>
+								</View>
+							</View>
 
-					<View style={styles.explanation}>
-						<View style={[styles.iconHolder, {backgroundColor: "#693ce1"}]}></View>
-						<View style={styles.textContainer}>
-							<Text style={styles.text}>Help the community by reporting what's in stock</Text>
+							<View style={styles.explanation}>
+								<View style={[styles.iconHolder, {backgroundColor: "#7897f4"}]}></View>
+								<View style={styles.textContainer}>
+									<Text style={styles.text}>See what's available at stores closest to you</Text>
+								</View>
+							</View>
+
+							<View style={styles.explanation}>
+								<View style={[styles.iconHolder, {backgroundColor: "#693ce1"}]}></View>
+								<View style={styles.textContainer}>
+									<Text style={styles.text}>Help the community by reporting what's in stock</Text>
+								</View>
+							</View>
 						</View>
-					</View>
 
-				</View>
+					}
 
-				<View style={styles.emailForm} intensity={1}>
-					<Text style={{color: "#fff", fontSize: 12}}>Join the community to track your impact. It’s a free and secure way to see how your reports help others</Text>
-					<TextInput
-						style={styles.emailInput}
-						placeholder="Email address"
-						keyboardType="email-address"
-						textContentType="emailAddress"
-						placeholderTextColor="#fff"
-						selectionColor="#4cd6d3"
-						onBlur={() => checkValidEmail(email)}
-						onChangeText={text => setEmail(text)}
-					/>
-				</View>
-
-				<TouchableOpacity style={styles.getStartedButton} onPress={() => closeLandingPage()}>
-					<Text style={styles.getStartedText}>Let's get started!</Text>
-				</TouchableOpacity>
-			</KeyboardAvoidingView>
-		</Modal>
+					<TouchableOpacity style={[styles.getStartedButton, {backgroundColor: emailVisible? "#7c49fd": "#4cd6d3"}]} onPress={() => {buttonPress()}}>
+						
+						{
+							emailVisible?
+							<Text style={styles.getStartedText}>Let's get started!</Text>
+							:
+							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", "alignItems": "center"}}>
+								<Text style={styles.getStartedText}>Next</Text>
+								<AntDesign style={{marginTop: 4, marginLeft: 10}} name="arrowright" size={30} color={"#fff"} />
+							</View>
+						}
+					</TouchableOpacity>
+				</KeyboardAvoidingView>
+			</Modal>
+		</View>
 	);
 }
 
@@ -156,13 +195,14 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	emailForm: {
+		width: "100%",
 		backgroundColor: "#7897f4",
-		height: 100,
+		height: "80%",
 		borderRadius: 30,
 		paddingHorizontal: 30,
 		paddingVertical: 5,
 		flexDirection: "column",
-		justifyContent: "space-around",
+		justifyContent: "space-evenly",
 		shadowOffset: {
 			width: 0,
 			height: 4,
@@ -180,7 +220,7 @@ const styles = StyleSheet.create({
 		color: "#fff",
 	},
 	getStartedButton: {
-		height: "7%",
+		height: 62.72,
 		width: "75%",
 		backgroundColor: "#7c49fd",
 		flexDirection: "column",
@@ -200,5 +240,10 @@ const styles = StyleSheet.create({
 		fontSize: 19,
 		color: "white",
 		fontWeight: "bold",
+	},
+	modalCaption: {
+		color: "#fff",
+		fontSize: 18,
+		marginVertical: 8,
 	},
 });

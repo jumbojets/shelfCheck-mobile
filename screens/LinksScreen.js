@@ -128,7 +128,7 @@ export default function LinksScreen() {
       <Modal isVisible={modalVisible} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
         <View style={styles.modalContainer}>
           <View style={styles.modalTitleContainer}>
-            <Text style={styles.modalTitle}>Your email</Text>
+            <Text style={styles.modalTitle}>Join the community</Text>
           </View>
           <View style={{flexDirection: "row"}}>
             <Text style={styles.modalCaption}>•</Text><Text style={styles.modalCaption}> Consider signing up to join the community</Text>
@@ -197,7 +197,7 @@ export default function LinksScreen() {
 
           <OptionButton
             icon="ios-at"
-            label="Your email"
+            label="Join the community"
             onPress={() => setModalVisible(true)}
           />
         </View>

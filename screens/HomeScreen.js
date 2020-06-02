@@ -36,16 +36,20 @@ export function HomePageScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [itemCategory, setItemCategory] = React.useState("Nutrition");
   const [modalColor, setModalColor] = React.useState("");
-  var landingVisible = false;
+  // var landingVisible = true;
 
-  try {
-    const value = AsyncStorage.getItem("seenLanding");
-    if (value === null) {
-      landingVisible = true;
+  const getSeenLanding = async () => {
+    try {
+      const value = await AsyncStorage.getItem("seenLanding");
+      console.log(value);
+      return value !== "true";
+    } catch {
+      Alert.alert("Error", "error finding if have seen landing page");
     }
-  } catch {
-    Alert.alert("Error", "error finding if have seen landing page");
-  }
+  };
+
+  var landingVisible = getSeenLanding();
+  
 
 
   return (

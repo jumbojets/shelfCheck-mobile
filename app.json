@@ -5,7 +5,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.4",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -22,14 +22,14 @@
     ],
     "ios": {
       "bundleIdentifier": "com.shelfcheck.shelfcheck",
-      "buildNumber": "3",
+      "buildNumber": "2",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "shelfCheck needs your location to find stores near you for the items you need"
       }
     },
     "android": {
       "package": "com.shelfcheck.shelfcheck",
-      "versionCode": 3
+      "versionCode": 4
     }
   }
 }

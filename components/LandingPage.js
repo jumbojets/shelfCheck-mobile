@@ -5,6 +5,11 @@ import UserOperations from '../api/UserOperations';
 import { AntDesign } from '@expo/vector-icons'; 
 
 export default function LandingPage(props) {
+	// passing wrong item as prompt. return nothing
+	if (props.isVisible !== true || props.isVisible !== false) {
+		return (<View />);
+	}
+
 	const [modalVisible, setModalVisible] = React.useState(props.isVisible);
 	const [emailVisible, setEmailVisible] = React.useState(false);
 	const [email, setEmail] = React.useState("");
@@ -32,6 +37,7 @@ export default function LandingPage(props) {
 
 		setModalVisible(false);
 		try {
+			console.log('is this called')
 			AsyncStorage.setItem("seenLanding", "true");
 		} catch {
 			Alert.alert("Error", "There was a problem properly closing your landing page");

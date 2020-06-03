@@ -2,17 +2,28 @@ import * as React from 'react';
 import Modal from 'react-native-modal';
 import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage, StyleSheet, Dimensions, Alert, Image, ImageBackground } from 'react-native';
 import UserOperations from '../api/UserOperations';
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign } from '@expo/vector-icons';
+import useCachedResources from '../hooks/useCachedResources';
 
-export default function LandingPage(props) {
-	// passing wrong item as prompt. return nothing
-	if (props.isVisible !== true || props.isVisible !== false) {
-		return (<View />);
-	}
-
-	const [modalVisible, setModalVisible] = React.useState(props.isVisible);
+export default function LandingPage() {
+	const [modalVisible, setModalVisible] = React.useState(false);
 	const [emailVisible, setEmailVisible] = React.useState(false);
+	const [closed, setClosed] = React.useState(false);
 	const [email, setEmail] = React.useState("");
+
+	useCachedResources();
+
+	React.useEffect(() => {
+		async function GOOO() {
+			try {
+				const value = await AsyncStorage.getItem("seenLanding");
+				setModalVisible(value === null);
+			} catch {
+				Alert.alert("Error", "error finding if have seen landing page");
+			}
+		}
+		GOOO();
+	});
 
 	const closeLandingPage = async () => {
 		if (email !== "") {
@@ -36,12 +47,13 @@ export default function LandingPage(props) {
 		}
 
 		setModalVisible(false);
+		setClosed(true);
 		try {
-			console.log('is this called')
 			AsyncStorage.setItem("seenLanding", "true");
 		} catch {
 			Alert.alert("Error", "There was a problem properly closing your landing page");
 		}
+		useCachedResources();
 	};
 
 	const validateEmail = (trial) => {

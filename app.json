@@ -22,7 +22,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.shelfcheck.shelfcheck",
-      "buildNumber": "2",
+      "buildNumber": "4",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "shelfCheck needs your location to find stores near you for the items you need"
       }

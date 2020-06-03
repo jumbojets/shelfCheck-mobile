@@ -1,7 +1,7 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert, AsyncStorage, Dimensions } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert, AsyncStorage, Dimensions, Linking } from 'react-native';
 import Modal from 'react-native-modal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,7 +17,79 @@ import AddDataScreen from './AddDataScreen';
 import ItemScreen from './ItemScreen';
 import StoreScreen from './StoreScreen';
 
+import CheckRegionAvailability from '../api/CheckRegionAvailability';
+import GetCurrentLocation from '../api/GetCurrentLocation';
+import IsAppVersionCurrent from '../api/IsAppVersionCurrent';
+import Constants  from 'expo-constants';
+
+
 const Stack = createStackNavigator();
+
+alertRegionAvailability = async () => {
+  const { latitude, longitude } = await GetCurrentLocation();
+  const c = await CheckRegionAvailability({latitude: latitude, longitude: longitude});
+
+  if (! c.available) {
+    Alert.alert("Thanks for checking shelfCheck out!", "Unfortunately, the app is not available in your region. Stay tuned at shelfcheck.io for when it may come to your region.");
+  }
+
+};
+
+alertIfTermsNotChecked = async () => {
+  try {
+    const value = await AsyncStorage.getItem('hasAgreedTerms');
+    if (value === null) {
+      Alert.alert(
+        "Welcome to shelfCheck!",
+        "By using our app you agree to our Terms and Conditions.",
+        [
+          {
+            text: "Review Terms and Conditions",
+            onPress: () => WebBrowser.openBrowserAsync('https://www.shelfcheck.io/terms'),
+          },
+          {
+            text: "Sounds good!",
+            onPress: () => {},
+          }
+        ]
+      )
+    }
+    await AsyncStorage.setItem('hasAgreedTerms', "true");
+  } catch (error) {
+  }
+}
+
+alertIfOldVersion = async () => {
+  // this will not work in expo app because it has a different version number
+  const contents = await IsAppVersionCurrent({version: Constants.nativeAppVersion});
+
+  if (!contents.current) {
+
+    Alert.alert(
+      "Welcome back!",
+      "There is a new update to the app! It has new features and bug fixes. We strongly recommend installing it.",
+      [
+        {
+          text: "No Thanks!",
+          onPress: () => {},
+        },
+        {
+          text: "Let's do it!",
+          onPress: () => {
+            const url = Platform.select({
+              ios: 'https://apps.apple.com/us/app/shelfcheck-shop-smarter/id1514416220',
+              android: 'https://play.google.com/store/apps/details?id=com.shelfcheck.shelfcheck'
+            });
+
+            Linking.openURL(url);
+          },
+        }
+      ]
+    )
+
+  }
+}
+
 
 export default function HomePage() {
   return (
@@ -33,29 +105,24 @@ export default function HomePage() {
 }
 
 export function HomePageScreen({ navigation, route }) {
+  const [timesLogged, setTimesLogged] = React.useState(1);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [itemCategory, setItemCategory] = React.useState("Nutrition");
   const [modalColor, setModalColor] = React.useState("");
-  // var landingVisible = true;
 
-  const getSeenLanding = async () => {
-    try {
-      const value = await AsyncStorage.getItem("seenLanding");
-      console.log(value);
-      return value !== "true";
-    } catch {
-      Alert.alert("Error", "error finding if have seen landing page");
+  React.useEffect(() => {
+    if (timesLogged === 1) {
+      alertRegionAvailability();
+      alertIfTermsNotChecked();
+      alertIfOldVersion();
+      setTimesLogged(2);
     }
-  };
-
-  var landingVisible = getSeenLanding();
+  });
   
-
-
   return (
     <View>
 
-      <LandingPage isVisible={landingVisible} />
+      <LandingPage />
 
       <View style={styles.container}>
       <ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>

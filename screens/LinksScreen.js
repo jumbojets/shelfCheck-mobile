@@ -180,7 +180,7 @@ export default function LinksScreen() {
           <OptionButton
             icon="md-paper-plane"
             label="Contact us"
-            onPress={() => Linking.openURL('mailto:contact.shelfcheck@gmail.com')}
+            onPress={() => Linking.openURL('mailto:contact@shelfcheck.io')}
           />
 
           <OptionButton

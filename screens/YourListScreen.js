@@ -15,6 +15,7 @@ import StoreScreen from './StoreScreen';
 import GetCurrentLocation from '../api/GetCurrentLocation';
 import GetClosestStoresMultipleItems from '../api/GetClosestStoresMultipleItems';
 import Items from '../constants/Items';
+import PathRouter from '../components/PathRouter';
 
 const Stack = createStackNavigator();
 
@@ -48,7 +49,7 @@ function AutoRefreshWrapper(props) {
 }
 
 class YourListScreen extends React.Component {
-	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false};
+	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false, routeVisible: true};
 
 	clearList = () => {
 		Items.forEach(async (item, index) => {
@@ -178,6 +179,10 @@ class YourListScreen extends React.Component {
 		this.setState({ contents: c });
 	}
 
+	closeRoute = () => {
+		this.setState({ routeVisible: false })
+	}
+
 	componentDidMount = async () => {
 		await this.getItemListAndStates();
 		await this.resetContents();
@@ -198,6 +203,7 @@ class YourListScreen extends React.Component {
 			<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
 				<View style={styles.main}>
 
+					<PathRouter isVisible={this.state.routeVisible} closeRoute={this.closeRoute} />
 
 					<Modal isVisible={this.state.modalVisible} onBackdropPress={() => this.closeModal()} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
 						<View style={styles.modalContainer}>

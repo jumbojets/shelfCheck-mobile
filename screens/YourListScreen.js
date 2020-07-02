@@ -203,7 +203,7 @@ class YourListScreen extends React.Component {
 			<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
 				<View style={styles.main}>
 
-					<PathRouter isVisible={this.state.routeVisible} closeRoute={this.closeRoute} />
+					<PathRouter isVisible={this.state.routeVisible} closeModal={this.closeRoute} />
 
 					<Modal isVisible={this.state.modalVisible} onBackdropPress={() => this.closeModal()} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
 						<View style={styles.modalContainer}>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Modal from 'react-native-modal';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 
@@ -75,10 +75,24 @@ function Details(props) {
 			<View style={modalStyles.main}>
 				<View style={modalStyles.titleContainer}>
 					<Text style={modalStyles.title}>Route Details</Text>
-
-					<TouchableOpacity style={modalStyles.backButton} onPress={props.closeModal}>
+						<TouchableOpacity style={modalStyles.backButton} onPress={props.closeModal}>
 						<Icon name="remove" size={30} color={"#fff"} />
 					</TouchableOpacity>
+				</View>
+
+				<View style={modalStyles.detailsRow}>
+					<Text style={modalStyles.detailsText}>Total travel time</Text>
+					<Text style={modalStyles.detailsText}>17 min</Text>
+				</View>
+
+				<View style={modalStyles.detailsRow}>
+					<Text style={modalStyles.detailsText}>Your list found</Text>
+					<Text style={modalStyles.detailsText}>71%</Text>
+				</View>
+
+				<View style={modalStyles.detailsRow}>
+					<Text style={modalStyles.detailsText}>Items missing</Text>
+					<Text style={[modalStyles.detailsText, {lineHeight: 25}]}>Yeast{"\n"}Batteries</Text>
 				</View>
 			</View>
 		</Modal>
@@ -87,15 +101,43 @@ function Details(props) {
 
 function ChangeDestination(props) {
 	return (
-		<Modal isVisible={props.isVisible} onBackdropPress={props.closeModal} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
-			<View style={modalStyles.main}>
+		<Modal isVisible={props.isVisible} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
+			<View style={[modalStyles.main, {bottom: "15%"}]}>
 				<View style={modalStyles.titleContainer}>
 					<Text style={modalStyles.title}>Change destination</Text>
+				</View>
 
-					<TouchableOpacity style={modalStyles.backButton} onPress={props.closeModal}>
-						<Icon name="remove" size={30} color={"#fff"} />
+				<View style={{flexDirection: "row"}}>
+					<Text style={modalStyles.modalCaption}>•</Text><Text style={modalStyles.modalCaption}> Some caption convincing them to type in their address</Text>
+				</View>
+				<View style={{flexDirection: "row"}}>
+					<Text style={modalStyles.modalCaption}>•</Text><Text style={modalStyles.modalCaption}> Some caption convincing them to type in their address</Text>
+				</View>
+				<View style={{flexDirection: "row"}}>
+					<Text style={modalStyles.modalCaption}>•</Text><Text style={modalStyles.modalCaption}> Press "Use current" to use your current location as your final destination</Text>
+				</View>
+
+				<View style={modalStyles.addressForm} intensity={1}>
+					<TextInput
+						style={modalStyles.emailInput}
+						placeholder="Address"
+						textContentType="addressCityAndState"
+						placeholderTextColor="#68ADEB"
+						selectionColor="#4cd6d3"
+						onBlur={() => {}}
+						onChangeText={text => {}}
+					/>
+				</View>
+
+				<View style={modalStyles.doneRowContainer}>
+					<TouchableOpacity style={[modalStyles.doneButton, {width: "40%", backgroundColor: "#4cd6de"}]} onPress={props.closeModal}>
+						<Text style={{color: "#fff", fontWeight: "bold", fontSize: 16}}>I'm done!</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={[modalStyles.doneButton, {width: "40%"}]} onPress={() => {}}>
+						<Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 16}}>Use current</Text>
 					</TouchableOpacity>
 				</View>
+
 			</View>
 		</Modal>
 	)
@@ -105,8 +147,10 @@ const modalStyles = StyleSheet.create({
 	main: {
 		width: Dimensions.get("window").width*0.90,
 		borderRadius: 30,
-		backgroundColor: "#7b85f4",
+		backgroundColor: "#68ADEB",
 		padding: "5%",
+		flexDirection: "column",
+		justifyContent: "space-between",
     },
     titleContainer: {
 	    flexDirection: "row",
@@ -134,6 +178,84 @@ const modalStyles = StyleSheet.create({
 		},
 		shadowRadius: 3,
 		shadowOpacity: 0.2,
+		elevation: 7,
+	},
+	detailsRow: {
+		paddingHorizontal: "10%",
+		paddingVertical: 20,
+		width: "100%",
+		backgroundColor: "#fff3",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		marginVertical: 5,
+		borderRadius: 25,
+		shadowColor: "#000",
+	    shadowOffset: {
+	      width: 0,
+	      height: 3,
+	    },
+	    shadowRadius: 3,
+	    shadowOpacity: 0.2,
+	    elevation: 7,
+	},
+	detailsText: {
+		color: "#fff",
+		fontSize: 18,
+		fontWeight: "bold",
+		textAlign: "right",
+	},
+	modalCaption: {
+		color: "#fff",
+		fontSize: 15,
+		// marginVertical: -8,
+	},
+	addressForm: {
+		marginTop: 5,
+		backgroundColor: "#fff",
+		height: 50,
+		borderRadius: 30,
+		paddingVertical: 5,
+		flexDirection: "column",
+		justifyContent: "space-around",
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowRadius: 4.7,
+		shadowOpacity: 0.3,
+		elevation: 8,
+		marginTop: 20,
+		marginBottom: 20,
+	},
+	emailInput: {
+		height: 40,
+		borderRadius: 20,
+		borderColor: "#fff",
+		borderWidth: 2,
+		paddingHorizontal: 20,
+		color: "#68ADEB",
+	},
+	doneRowContainer: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		alignItems: "center",
+		height: 40,
+	},
+	doneButton: {
+		backgroundColor: "#fff",
+		paddingHorizontal: "0%",
+		height: "100%",
+		borderRadius: 25,
+		alignItems: "center",
+		flexDirection: "row",
+		justifyContent: "space-around",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowRadius: 3,
+		shadowOpacity: 0.15,
 		elevation: 7,
 	},
 });

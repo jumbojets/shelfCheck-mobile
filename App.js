@@ -11,7 +11,6 @@ import LinkingConfiguration from './navigation/LinkingConfiguration';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 
-
 const Stack = createStackNavigator();
 
 export default function App(props) {
@@ -19,7 +18,7 @@ export default function App(props) {
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
       <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
+        {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
         <NavigationContainer linking={LinkingConfiguration}>
           <Stack.Navigator screenOptions={{headerShown: false}}>
             <Stack.Screen

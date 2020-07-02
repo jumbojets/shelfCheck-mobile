@@ -27,8 +27,8 @@ function Store(props) {
 	return (
 		<View style={storeStyles.store}>
 			<TouchableOpacity>
-				<Text style={{fontSize: 17, color: "#9495FD", fontWeight: "bold"}}>{props.name}</Text>
-				<Text style={{color: "#9495FD"}}>{props.items}</Text>
+				<Text style={{fontSize: 18, color: "#fff", fontWeight: "bold"}}>{props.name}</Text>
+				<Text style={{color: "#fff"}}>{props.items}</Text>
 			</TouchableOpacity>
 			<TouchableOpacity style={storeStyles.navigateButton}>
 				<Text style={{color: "#fff", fontWeight: "bold"}}>Navigate</Text>
@@ -44,14 +44,22 @@ const storeStyles = StyleSheet.create({
 		height: Dimensions.get("window").height*0.08,
 		width: "90%",
 		paddingHorizontal: 20,
-		backgroundColor: "#fff",
+		backgroundColor: "#fff3",
 		borderRadius: 30,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
+		shadowColor: "#000",
+	    shadowOffset: {
+	      width: 0,
+	      height: 3,
+	    },
+	    shadowRadius: 3,
+	    shadowOpacity: 0.2,
+	    elevation: 7,
 	},
 	navigateButton: {
-		backgroundColor: "#9495FD",
+		backgroundColor: "#fff3",
 		width: "35%",
 		paddingHorizontal: "3%",
 		height: "50%",
@@ -390,7 +398,7 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 	},
 	topRightButton: {
-		backgroundColor: "#fff",
+		backgroundColor: "#fff3",
 		height: 35,
 		width: "25%",
 		flexDirection: "column",
@@ -406,7 +414,7 @@ const styles = StyleSheet.create({
 		elevation: 7,
 	},
 	topRightButtonText: {
-		color: "#9495FD",
+		color: "#fff",
 		fontWeight: "bold",
 	},
 	captionText: {

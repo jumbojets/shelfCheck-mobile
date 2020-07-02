@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, Text, View, Linking, ImageBackground, TouchableOpacity, AsyncStorage, Dimensions, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, AsyncStorage, Dimensions, TextInput, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import UserOperations from '../api/UserOperations';
+import * as MailComposer from "expo-mail-composer";
 
 const getStoredEmail = async () => {
   try {
@@ -180,7 +181,9 @@ export default function LinksScreen() {
           <OptionButton
             icon="md-paper-plane"
             label="Contact us"
-            onPress={() => Linking.openURL('mailto:contact@shelfcheck.io')}
+            onPress={() => MailComposer.composeAsync({
+              recipients: ["contact@shelfcheck.io"]
+            })}
           />
 
           <OptionButton

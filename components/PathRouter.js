@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Modal from 'react-native-modal';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, TextInput, Alert, AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import GetCurrentLocation from '../api/GetCurrentLocation';
+import GreedyShopper from '../api/GreedyShopper';
 import ReverseGeocode from '../api/ReverseGeocode';
 import ForwardGeocode from '../api/ForwardGeocode';
-
+import GreedyShopperDb from '../pouch/GreedyShopperDb';
 
 function Bridge(props) {
 	return (
@@ -113,26 +114,33 @@ function Details(props) {
 }
 
 function ChangeDestination(props) {
-	const [placeholder, setPlaceholder] = React.useState("default");
-	const [address, setAddress] = React.useState("default");
+	const [placeholder, setPlaceholder] = React.useState(props.initial);
+	const [address, setAddress] = React.useState(props.initial);
 	const [wasTyped, setWasTyped] = React.useState(false);
 	const [wasUpdated, setWasUpdated] = React.useState(false);
 	const [textInput, setTextInput] = React.useState(null);
+
+	getInitialAddress(setPlaceholder, (n) => {}, (n) => {});
 
 	const ensureValidAddress = async () => {
 		// make sure to change address to placeholder if the address has just been clicked on
 
 		const { longitude, latitude } = await ForwardGeocode(address);
 
-		if (longitude === undefined) {
+		if (longitude === null) {
 			Alert.alert("We are extremely sorry! We couldnt find that address within 50 miles");
 			return;
 		}
 
-		// this is not most efficient
 		const reversed_address = await ReverseGeocode(longitude, latitude);
 
-		// store in pouchdb along with coordinates
+		try {
+			await AsyncStorage.setItem('finalDestAddress', reversed_address);
+			await AsyncStorage.setItem('finalDestLongitude', longitude.toString());
+			await AsyncStorage.setItem('finalDestLatitude', latitude.toString());
+		} catch {
+			Alert.alert('Error setting address locally')
+		}
 
 		setPlaceholder(reversed_address);
 		setAddress(reversed_address);
@@ -142,13 +150,13 @@ function ChangeDestination(props) {
 		textInput.clear();
 	};
 
-	const imDone = () => {
+	const imDone = async () => {
 		if (wasTyped) {
 			ensureValidAddress();
 		}
 
 		if (wasUpdated) {
-			// if updated, must tell route to update
+			await AsyncStorage.setItem('updateRoute', 'true');
 			props.updateFinalDestination(address);
 		}
 
@@ -163,7 +171,13 @@ function ChangeDestination(props) {
 
 		const reversed_address = await ReverseGeocode(longitude, latitude);
 
-		// store address / coordinates in pouchdb
+		try {
+			await AsyncStorage.setItem('finalDestAddress', address);
+			await AsyncStorage.setItem('finalDestLongitude', longitude.toString());
+			await AsyncStorage.setItem('finalDestLatitude', latitude.toString());
+		} catch {
+			Alert.alert('Error setting address locally')
+		}
 
 		setPlaceholder(reversed_address);
 		setAddress(reversed_address);
@@ -337,10 +351,88 @@ const modalStyles = StyleSheet.create({
 	},
 });
 
+async function getInitialAddress(setFinalDestination, setFinalLongitude, setFinalLatitude) {
+	try {
+		const finalDestAddress = await AsyncStorage.getItem('finalDestAddress');
+
+		if (finalDestAddress !== null) {
+			setFinalDestination(finalDestAddress);
+		} else {
+			const { longitude, latitude } = await GetCurrentLocation();
+
+			const reversed_address = await ReverseGeocode(longitude, latitude);
+
+			try {
+				await AsyncStorage.setItem('finalDestAddress', address);
+			} catch {
+				Alert.alert('Error setting address locally')
+			}
+
+			setFinalDestination(reversed_address);
+		}
+
+		getInitialCoordinates(finalDestAddress, setFinalLongitude, setFinalLatitude)
+	} catch {
+		Alert.alert('error getting stored final destination')
+	}
+}
+
+async function getInitialCoordinates(finalDestination, setFinalLongitude, setFinalLatitude) {
+	const dest_coordinates = await ForwardGeocode(finalDestination);
+	setFinalLongitude(dest_coordinates.longitude);
+	setFinalLatitude(dest_coordinates.latitude);
+}
+
 export default function PathRouter(props) {
 	const [detailsVisible, setDetailsVisible] = React.useState(false);
 	const [changeDestinationVisible, setChangeDestinationVisible] = React.useState(false);
-	const [finalDestination, setFinalDestination] = React.useState("default");
+
+	const [finalDestination, setFinalDestination] = React.useState("");
+	const [finalLongitude, setFinalLongitude] = React.useState(0.);
+	const [finalLatitude, setFinalLatitude] = React.useState(0.);
+	const [contents, setContents] = React.useState({});
+
+	getInitialAddress(setFinalDestination, setFinalLongitude, setFinalLatitude);
+
+	const updateGreedyShopper = async () => {
+		const curr_coordinates = await GetCurrentLocation();
+
+		const contents = await GreedyShopper({
+			curr_longitude: curr_coordinates.longitude,
+			curr_latitude: curr_coordinates.latitude,
+			home_longitude: finalLongitude,
+			home_latitude: finalLatitude,
+			items: ['Bread', 'Bottled Water', 'Milk'],
+		});
+
+		GreedyShopperDb.store(contents);
+	};
+
+	React.useEffect(() => {
+		const YERRR = async () => {
+			try {
+				const value = await AsyncStorage.getItem("updateRoute");
+
+				if (value === "true" && finalLongitude !== 0 && finalLatitude !== 0) {
+					await updateGreedyShopper();
+					await AsyncStorage.setItem("updateRoute", "false");
+				}
+
+				const recv = await GreedyShopperDb.retrieve();
+
+				if (recv === undefined) {
+					await AsyncStorage.setItem('updateRoute', 'true');
+				}
+
+				setContents(recv);
+
+			} catch {
+				Alert.alert('could not update your route')
+			}
+		};
+		YERRR();
+	})
+
 
 	return (
 		<View>

@@ -1,8 +1,12 @@
 import * as React from 'react';
 import Modal from 'react-native-modal';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import GetCurrentLocation from '../api/GetCurrentLocation';
+import ReverseGeocode from '../api/ReverseGeocode';
+import ForwardGeocode from '../api/ForwardGeocode';
+
 
 function Bridge(props) {
 	return (
@@ -103,11 +107,75 @@ function Details(props) {
 					<Text style={[modalStyles.detailsText, {lineHeight: 25}]}>Yeast{"\n"}Batteries</Text>
 				</View>
 			</View>
+			<View></View>
 		</Modal>
 	)
 }
 
 function ChangeDestination(props) {
+	const [placeholder, setPlaceholder] = React.useState("default");
+	const [address, setAddress] = React.useState("default");
+	const [wasTyped, setWasTyped] = React.useState(false);
+	const [wasUpdated, setWasUpdated] = React.useState(false);
+	const [textInput, setTextInput] = React.useState(null);
+
+	const ensureValidAddress = async () => {
+		// make sure to change address to placeholder if the address has just been clicked on
+
+		const { longitude, latitude } = await ForwardGeocode(address);
+
+		if (longitude === undefined) {
+			Alert.alert("We are extremely sorry! We couldnt find that address within 50 miles");
+			return;
+		}
+
+		// this is not most efficient
+		const reversed_address = await ReverseGeocode(longitude, latitude);
+
+		// store in pouchdb along with coordinates
+
+		setPlaceholder(reversed_address);
+		setAddress(reversed_address);
+		setWasUpdated(true);
+		setWasTyped(false);
+
+		textInput.clear();
+	};
+
+	const imDone = () => {
+		if (wasTyped) {
+			ensureValidAddress();
+		}
+
+		if (wasUpdated) {
+			// if updated, must tell route to update
+			props.updateFinalDestination(address);
+		}
+
+		setWasTyped(false);
+		setWasUpdated(false);
+
+		props.closeModal();
+	};
+
+	const useCurrentLocation = async () => {
+		const { longitude, latitude } = await GetCurrentLocation();
+
+		const reversed_address = await ReverseGeocode(longitude, latitude);
+
+		// store address / coordinates in pouchdb
+
+		setPlaceholder(reversed_address);
+		setAddress(reversed_address);
+		setWasTyped(false);
+		setWasUpdated(true);
+
+		textInput.clear();
+	};
+
+	// use effect to read from pouchdb for current. if no current, default to current location.
+	// do the same with address
+
 	return (
 		<Modal isVisible={props.isVisible} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
 			<View style={[modalStyles.main, {bottom: "15%"}]}>
@@ -127,21 +195,22 @@ function ChangeDestination(props) {
 
 				<View style={modalStyles.addressForm} intensity={1}>
 					<TextInput
-						style={modalStyles.emailInput}
-						placeholder="Address"
+						ref={input => setTextInput(input)}
+						style={modalStyles.addressInput}
+						placeholder={placeholder}
 						textContentType="addressCityAndState"
 						placeholderTextColor="#68ADEB"
 						selectionColor="#4cd6d3"
-						onBlur={() => {}}
-						onChangeText={text => {}}
+						onBlur={ensureValidAddress}
+						onChangeText={text => {setAddress(text); setWasTyped(true);}}
 					/>
 				</View>
 
 				<View style={modalStyles.doneRowContainer}>
-					<TouchableOpacity style={[modalStyles.doneButton, {width: "40%", backgroundColor: "#4cd6de"}]} onPress={props.closeModal}>
+					<TouchableOpacity style={[modalStyles.doneButton, {width: "40%", backgroundColor: "#4cd6de"}]} onPress={imDone}>
 						<Text style={{color: "#fff", fontWeight: "bold", fontSize: 16}}>I'm done!</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={[modalStyles.doneButton, {width: "40%"}]} onPress={() => {}}>
+					<TouchableOpacity style={[modalStyles.doneButton, {width: "40%"}]} onPress={useCurrentLocation}>
 						<Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 16}}>Use current</Text>
 					</TouchableOpacity>
 				</View>
@@ -236,7 +305,7 @@ const modalStyles = StyleSheet.create({
 		marginTop: 20,
 		marginBottom: 20,
 	},
-	emailInput: {
+	addressInput: {
 		height: 40,
 		borderRadius: 20,
 		borderColor: "#fff",
@@ -271,17 +340,13 @@ const modalStyles = StyleSheet.create({
 export default function PathRouter(props) {
 	const [detailsVisible, setDetailsVisible] = React.useState(false);
 	const [changeDestinationVisible, setChangeDestinationVisible] = React.useState(false);
-
-
-	// closeModal = () => {
-	// 	props.closeRoute();
-	// }
+	const [finalDestination, setFinalDestination] = React.useState("default");
 
 	return (
 		<View>
 			<Modal isVisible={props.isVisible} animationIn="fadeIn" animationOut="fadeOut" backdropOpacity={0.0}>
 				<Details isVisible={detailsVisible} closeModal={() => setDetailsVisible(false)} />
-				<ChangeDestination isVisible={changeDestinationVisible} closeModal={() => setChangeDestinationVisible(false)} />
+				<ChangeDestination isVisible={changeDestinationVisible} closeModal={() => setChangeDestinationVisible(false)} updateFinalDestination={(addy) => setFinalDestination(addy)} />
 
 				<View style={styles.main}>
 					<View style={styles.titleContainer}>
@@ -321,7 +386,7 @@ export default function PathRouter(props) {
 					<View style={styles.addressContainer}>
 						<TouchableOpacity style={styles.address}>
 							<Text style={{color: "white", fontSize: 15, fontWeight: "bold"}}>Your final destination:</Text>
-							<Text style={{color: "white", fontSize: 15,}}>227 Midenhall Way, Cary, NC</Text>
+							<Text style={{color: "white", fontSize: 15,}}>{finalDestination}</Text>
 						</TouchableOpacity>
 
 						<TouchableOpacity style={styles.topRightButton} onPress={() => setChangeDestinationVisible(true)}>

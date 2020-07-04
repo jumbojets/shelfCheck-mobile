@@ -14,7 +14,7 @@ import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 const Stack = createStackNavigator();
 
 export default function App(props) {
-
+  AsyncStorage.setItem("updateRoute", "true");
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
       <View style={styles.container}>

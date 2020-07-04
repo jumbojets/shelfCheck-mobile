@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Modal from 'react-native-modal';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, TextInput, Alert, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, TextInput, Alert, AsyncStorage, Linking, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import GetCurrentLocation from '../api/GetCurrentLocation';
@@ -8,6 +8,7 @@ import GreedyShopper from '../api/GreedyShopper';
 import ReverseGeocode from '../api/ReverseGeocode';
 import ForwardGeocode from '../api/ForwardGeocode';
 import GreedyShopperDb from '../pouch/GreedyShopperDb';
+import Items from '../constants/Items';
 
 function Bridge(props) {
 	return (
@@ -29,13 +30,27 @@ const bridgeStyles = StyleSheet.create({
 });
 
 function Store(props) {
+	var items_string = "";
+
+	props.items.forEach(function (item, index) {
+		items_string += item.item_name + ', ';
+	});
+
+	items_string = items_string.slice(0, -2);
+
+	if (items_string.length > 24) {
+		items_string = items_string.slice(0, 24);
+	}
+
+	items_string += "...";
+
 	return (
 		<View style={storeStyles.store}>
 			<TouchableOpacity>
 				<Text style={{fontSize: 18, color: "#fff", fontWeight: "bold"}}>{props.name}</Text>
-				<Text style={{color: "#fff"}}>{props.items}</Text>
+				<Text style={{color: "#fff"}}>{items_string}</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={storeStyles.navigateButton}>
+			<TouchableOpacity style={storeStyles.navigateButton} onPress={() => openMapsApp(props.longitude, props.latitude, props.name)}>
 				<Text style={{color: "#fff", fontWeight: "bold"}}>Navigate</Text>
 				<Ionicons name="md-navigate" size={15} color="#fff" />
 			</TouchableOpacity>
@@ -83,6 +98,14 @@ const storeStyles = StyleSheet.create({
 });
 
 function Details(props) {
+	var not_found_items_string = "";
+
+	if (props.not_found_items === undefined || props.not_found_items.length === 0) {
+		not_found_items_string = "None!";
+	} else {
+		not_found_items_string += props.not_found_items[0];
+	}
+
 	return (
 		<Modal isVisible={props.isVisible} onBackdropPress={props.closeModal} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
 			<View style={modalStyles.main}>
@@ -95,17 +118,17 @@ function Details(props) {
 
 				<View style={modalStyles.detailsRow}>
 					<Text style={modalStyles.detailsText}>Total travel time</Text>
-					<Text style={modalStyles.detailsText}>17 min</Text>
+					<Text style={modalStyles.detailsText}>{props.total_travel_time} min</Text>
 				</View>
 
 				<View style={modalStyles.detailsRow}>
 					<Text style={modalStyles.detailsText}>Your list found</Text>
-					<Text style={modalStyles.detailsText}>71%</Text>
+					<Text style={modalStyles.detailsText}>{props.found_proportion}%</Text>
 				</View>
 
 				<View style={modalStyles.detailsRow}>
 					<Text style={modalStyles.detailsText}>Items missing</Text>
-					<Text style={[modalStyles.detailsText, {lineHeight: 25}]}>Yeast{"\n"}Batteries</Text>
+					<Text style={[modalStyles.detailsText, {lineHeight: 25}]}>{not_found_items_string}</Text>
 				</View>
 			</View>
 			<View></View>
@@ -351,6 +374,17 @@ const modalStyles = StyleSheet.create({
 	},
 });
 
+function openMapsApp(lng, lat, label) {
+	const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+	const latLng = `${lat},${lng}`;
+	const url = Platform.select({
+		ios: `${scheme}${label}@${latLng}`,
+		android: `${scheme}${latLng}(${label})`,
+	});
+
+	Linking.openURL(url);
+};
+
 async function getInitialAddress(setFinalDestination, setFinalLongitude, setFinalLatitude) {
 	try {
 		const finalDestAddress = await AsyncStorage.getItem('finalDestAddress');
@@ -363,7 +397,7 @@ async function getInitialAddress(setFinalDestination, setFinalLongitude, setFina
 			const reversed_address = await ReverseGeocode(longitude, latitude);
 
 			try {
-				await AsyncStorage.setItem('finalDestAddress', address);
+				await AsyncStorage.setItem('finalDestAddress', reversed_address);
 			} catch {
 				Alert.alert('Error setting address locally')
 			}
@@ -383,6 +417,23 @@ async function getInitialCoordinates(finalDestination, setFinalLongitude, setFin
 	setFinalLatitude(dest_coordinates.latitude);
 }
 
+async function getItemListAndStates() {
+	var list = [];
+
+	await Items.forEach(async (item, index) => {
+		try {
+			const value = await AsyncStorage.getItem(item);
+			if (value === "true") {
+				list.push(item);
+			}
+		} catch (error) {
+			Alert.alert("Error", "We are unable to properly retrieve your list" + error);
+		}
+	});
+
+	return list;
+}
+
 export default function PathRouter(props) {
 	const [detailsVisible, setDetailsVisible] = React.useState(false);
 	const [changeDestinationVisible, setChangeDestinationVisible] = React.useState(false);
@@ -397,15 +448,20 @@ export default function PathRouter(props) {
 	const updateGreedyShopper = async () => {
 		const curr_coordinates = await GetCurrentLocation();
 
-		const contents = await GreedyShopper({
-			curr_longitude: curr_coordinates.longitude,
-			curr_latitude: curr_coordinates.latitude,
-			home_longitude: finalLongitude,
-			home_latitude: finalLatitude,
-			items: ['Bread', 'Bottled Water', 'Milk'],
-		});
+		const items = await await getItemListAndStates();
 
-		GreedyShopperDb.store(contents);
+		// wait for the items promise to load
+		setTimeout(async () => {
+			const contents = await GreedyShopper({
+				curr_longitude: curr_coordinates.longitude,
+				curr_latitude: curr_coordinates.latitude,
+				home_longitude: finalLongitude,
+				home_latitude: finalLatitude,
+				items: items,
+			});
+
+			GreedyShopperDb.store(contents);	
+		}, 25);
 	};
 
 	React.useEffect(() => {
@@ -414,8 +470,8 @@ export default function PathRouter(props) {
 				const value = await AsyncStorage.getItem("updateRoute");
 
 				if (value === "true" && finalLongitude !== 0 && finalLatitude !== 0) {
-					await updateGreedyShopper();
 					await AsyncStorage.setItem("updateRoute", "false");
+					await updateGreedyShopper();
 				}
 
 				const recv = await GreedyShopperDb.retrieve();
@@ -433,11 +489,24 @@ export default function PathRouter(props) {
 		YERRR();
 	})
 
-
+	if (contents !== undefined && Object.keys(contents).length !== 0) {
 	return (
 		<View>
 			<Modal isVisible={props.isVisible} animationIn="fadeIn" animationOut="fadeOut" backdropOpacity={0.0}>
-				<Details isVisible={detailsVisible} closeModal={() => setDetailsVisible(false)} />
+				{
+					contents !== undefined && Object.keys(contents).length !== 0?
+						<Details
+							isVisible={detailsVisible}
+							closeModal={() => setDetailsVisible(false)}
+							total_travel_time={Math.round(contents.total_time / 60)}
+							found_proportion={Math.round(contents.found_proportion * 100)}
+							not_found_items={contents.not_found_items}
+						/>
+					:
+					<View />
+				}
+				
+
 				<ChangeDestination isVisible={changeDestinationVisible} closeModal={() => setChangeDestinationVisible(false)} updateFinalDestination={(addy) => setFinalDestination(addy)} />
 
 				<View style={styles.main}>
@@ -460,25 +529,33 @@ export default function PathRouter(props) {
 							</TouchableOpacity>
 						</View>
 
-						<Bridge duration={3} />
-						<Store name={"Harris Teeter"} items={"Bread, Milk"} />
+						{
+							contents.stores !== undefined?
+							<View style={{width: "100%", alignItems: "center"}}>
+							{
+								contents.stores.map((item, index) => (
+									<View key={index} style={{width: "100%", alignItems: "center"}}>
+										<Bridge duration={Math.round(contents.stop_times[index] / 60)} />
+										<Store name={item.name} items={item.approximate_quantities} longitude={item.coordinates[1]} latitude={item.coordinates[0]} />
+									</View>
+								))
+							}
 
-						<Bridge duration={7} />
-						<Store name={"Food Lion"} items={"Bottled Water, Milk"} />
+							<Bridge duration={Math.round(contents.stop_times[contents.stop_times.length - 1] / 60)} />
 
-						<Bridge duration={5} />
-						<Store name={"Target"} items={"Eggs, Toilet Paper"} />
+							<Text style={styles.duration}>To final destination</Text>
 
-						<Bridge duration={2} />
-
-						<Text style={styles.duration}>To final destination</Text>
+							</View>
+							:
+							<View><Text>Contents are undefined! Whatever that means :). I think ur list is empty</Text></View>
+						}
 
 					</View>
 
 					<View style={styles.addressContainer}>
-						<TouchableOpacity style={styles.address}>
+						<TouchableOpacity style={styles.address} onPress={() => openMapsApp(finalLongitude, finalLatitude, 'Final Destination')}>
 							<Text style={{color: "white", fontSize: 15, fontWeight: "bold"}}>Your final destination:</Text>
-							<Text style={{color: "white", fontSize: 15,}}>{finalDestination}</Text>
+							<Text style={{color: "white", fontSize: 15}}>{finalDestination}</Text>
 						</TouchableOpacity>
 
 						<TouchableOpacity style={styles.topRightButton} onPress={() => setChangeDestinationVisible(true)}>
@@ -490,7 +567,12 @@ export default function PathRouter(props) {
 			</Modal>
 		</View>
 	)
-}
+
+	} else {
+		return(<View />)
+	}
+
+	}
 
 const styles = StyleSheet.create({
 	main: {

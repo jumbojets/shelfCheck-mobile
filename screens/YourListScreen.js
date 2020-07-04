@@ -138,8 +138,9 @@ class YourListScreen extends React.Component {
 				this.setState({ userItems: newItems })
 				newStates[item] = "true";
 				this.setState({ itemStates: newStates })
-				await AsyncStorage.setItem(item, "true")
+				await AsyncStorage.setItem(item, "true");
 			}
+			await AsyncStorage.setItem("updateRoute", "true");
 		} catch (error) {
 			Alert.alert("Error", error);
 		}

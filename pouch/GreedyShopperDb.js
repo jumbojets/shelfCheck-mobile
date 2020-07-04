@@ -13,9 +13,14 @@ export default class GreedyShopperDb {
 				...contents
 			});
 		}).then(function (response) {
+			console.log('THIS IS SO FRUSTRATING')
 			return response;
 		}).catch(function (err) {
-			console.log(err);
+			localdb.put({
+				_id: 'greedyshopper',
+			}).catch(function (err) {
+				console.log(err);
+			})
 		})
 	}
 
@@ -23,7 +28,11 @@ export default class GreedyShopperDb {
 		return localdb.get('greedyshopper').then(function (doc) {
 			return doc;
 		}).catch(function (err) {
-			console.log(err);
+			localdb.put({
+				_id: 'greedyshopper',
+			}).catch(function (err) {
+				console.log(err);
+			})
 		})
 	}
 }

@@ -111,6 +111,8 @@ export default class ItemScreen extends React.Component {
 
 			await AsyncStorage.setItem("lastToggleTime", Date.now().toString());
 
+			await AsyncStorage.setItem("updateRoute", "false");
+
 			this.setState({ addedToList : !this.state.addedToList });
 
 		} catch (error) {

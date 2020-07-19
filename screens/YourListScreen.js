@@ -15,6 +15,7 @@ import StoreScreen from './StoreScreen';
 import GetCurrentLocation from '../api/GetCurrentLocation';
 import GetClosestStoresMultipleItems from '../api/GetClosestStoresMultipleItems';
 import Items from '../constants/Items';
+import PathRouter from '../components/PathRouter';
 
 const Stack = createStackNavigator();
 
@@ -48,7 +49,7 @@ function AutoRefreshWrapper(props) {
 }
 
 class YourListScreen extends React.Component {
-	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false};
+	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false, routeVisible: false};
 
 	clearList = () => {
 		Items.forEach(async (item, index) => {
@@ -137,8 +138,9 @@ class YourListScreen extends React.Component {
 				this.setState({ userItems: newItems })
 				newStates[item] = "true";
 				this.setState({ itemStates: newStates })
-				await AsyncStorage.setItem(item, "true")
+				await AsyncStorage.setItem(item, "true");
 			}
+			await AsyncStorage.setItem("updateRoute", "true");
 		} catch (error) {
 			Alert.alert("Error", error);
 		}
@@ -178,6 +180,10 @@ class YourListScreen extends React.Component {
 		this.setState({ contents: c });
 	}
 
+	closeRoute = () => {
+		this.setState({ routeVisible: false })
+	}
+
 	componentDidMount = async () => {
 		await this.getItemListAndStates();
 		await this.resetContents();
@@ -188,16 +194,17 @@ class YourListScreen extends React.Component {
 	render() {
 		const { navigation } = this.props;
 		var allItemsHeight = this.state.userItems.length * 45;
-		const scrollEnabled = allItemsHeight > Dimensions.get("window").height * 0.39;
+		const scrollEnabled = allItemsHeight > Dimensions.get("window").height * 0.34;
 
 		if (scrollEnabled) {
-			allItemsHeight = Dimensions.get("window").height * 0.39;
+			allItemsHeight = Dimensions.get("window").height * 0.34;
 		}
 
 		return (
 			<ImageBackground source={require('../assets/images/background.png')} style={{width: '100%', height: '100%'}}>
 				<View style={styles.main}>
 
+					<PathRouter isVisible={this.state.routeVisible} closeModal={this.closeRoute} />
 
 					<Modal isVisible={this.state.modalVisible} onBackdropPress={() => this.closeModal()} animationIn="slideInLeft" animationOut="slideOutLeft" backdropOpacity={0.55}>
 						<View style={styles.modalContainer}>
@@ -309,7 +316,12 @@ class YourListScreen extends React.Component {
 
 										}
 										</ScrollView>
-
+										<View style={styles.navigateRowContainer}>
+											<TouchableOpacity style={[styles.navigateButton, {width: "50%"}]} onPress={() => this.setState({routeVisible: true})}>
+												<Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 17}}>Best Route</Text>
+												<Ionicons name="md-navigate" size={17} color="#4cd6de" />
+											</TouchableOpacity>
+										</View>
 									</View>
 								</View>
 

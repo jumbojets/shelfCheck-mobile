@@ -195,7 +195,7 @@ function ChangeDestination(props) {
 		const reversed_address = await ReverseGeocode(longitude, latitude);
 
 		try {
-			await AsyncStorage.setItem('finalDestAddress', address);
+			await AsyncStorage.setItem('finalDestAddress', reversed_address);
 			await AsyncStorage.setItem('finalDestLongitude', longitude.toString());
 			await AsyncStorage.setItem('finalDestLatitude', latitude.toString());
 		} catch {

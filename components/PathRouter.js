@@ -30,25 +30,13 @@ const bridgeStyles = StyleSheet.create({
 });
 
 function Store(props) {
-	var items_string = "";
-
-	props.items.forEach(function (item, index) {
-		items_string += item.item_name + ', ';
-	});
-
-	items_string = items_string.slice(0, -2);
-
-	if (items_string.length > 24) {
-		items_string = items_string.slice(0, 24);
-	}
-
-	items_string += "...";
+	const num_items = props.items.length;
 
 	return (
 		<View style={storeStyles.store}>
 			<TouchableOpacity>
 				<Text style={{fontSize: 18, color: "#fff", fontWeight: "bold"}}>{props.name}</Text>
-				<Text style={{color: "#fff"}}>{items_string}</Text>
+				<Text style={{color: "#fff"}}>{num_items} of your items</Text>
 			</TouchableOpacity>
 			<TouchableOpacity style={storeStyles.navigateButton} onPress={() => openMapsApp(props.longitude, props.latitude, props.name)}>
 				<Text style={{color: "#fff", fontWeight: "bold"}}>Navigate</Text>
@@ -80,7 +68,7 @@ const storeStyles = StyleSheet.create({
 	},
 	navigateButton: {
 		backgroundColor: "#fff3",
-		width: "35%",
+		width: "40%",
 		paddingHorizontal: "3%",
 		height: "50%",
 		borderRadius: 20,
@@ -464,6 +452,22 @@ export default function PathRouter(props) {
 		}, 25);
 	};
 
+	const abbreviateAddress = (addr) => {
+		return addr
+			.replace("North", "N")
+			.replace("South", "S")
+			.replace("East", "E")
+			.replace("West", "W")
+			.replace("North East", "NE")
+			.replace("North West", "NW")
+			.replace("South East", "SE")
+			.replace("South West", "SW")
+			.replace("Drive", "Dr")
+			.replace("Avenue", "Ave")
+			.replace("Parkway", "Pkwy")
+			.replace("Road", "Rd");
+	}
+
 	React.useEffect(() => {
 		const YERRR = async () => {
 			try {
@@ -518,7 +522,7 @@ export default function PathRouter(props) {
 						</TouchableOpacity>
 					</View>
 
-					<Text style={styles.captionText}>Captioon here for the greedy-shopper!</Text>
+					<Text style={styles.captionText}>The best path to get the items on your list. Click a store for more info</Text>
 
 					<View style={styles.routeContainer}>
 						<View style={styles.routeTitleContainer}>
@@ -555,7 +559,7 @@ export default function PathRouter(props) {
 					<View style={styles.addressContainer}>
 						<TouchableOpacity style={styles.address} onPress={() => openMapsApp(finalLongitude, finalLatitude, 'Final Destination')}>
 							<Text style={{color: "white", fontSize: 15, fontWeight: "bold"}}>Your final destination:</Text>
-							<Text style={{color: "white", fontSize: 15}}>{finalDestination}</Text>
+							<Text style={{color: "white", fontSize: 14}}>{abbreviateAddress(finalDestination)}</Text>
 						</TouchableOpacity>
 
 						<TouchableOpacity style={styles.topRightButton} onPress={() => setChangeDestinationVisible(true)}>

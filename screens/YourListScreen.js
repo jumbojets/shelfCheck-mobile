@@ -194,10 +194,10 @@ class YourListScreen extends React.Component {
 	render() {
 		const { navigation } = this.props;
 		var allItemsHeight = this.state.userItems.length * 45;
-		const scrollEnabled = allItemsHeight > Dimensions.get("window").height * 0.39;
+		const scrollEnabled = allItemsHeight > Dimensions.get("window").height * 0.34;
 
 		if (scrollEnabled) {
-			allItemsHeight = Dimensions.get("window").height * 0.39;
+			allItemsHeight = Dimensions.get("window").height * 0.34;
 		}
 
 		return (

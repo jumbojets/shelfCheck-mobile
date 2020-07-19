@@ -49,7 +49,7 @@ function AutoRefreshWrapper(props) {
 }
 
 class YourListScreen extends React.Component {
-	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false, routeVisible: true};
+	state = {contents: [], userItems: [], itemStates: {}, loading: true, contentHeight: 0, modalVisible: false, routeVisible: false};
 
 	clearList = () => {
 		Items.forEach(async (item, index) => {
@@ -316,7 +316,12 @@ class YourListScreen extends React.Component {
 
 										}
 										</ScrollView>
-
+										<View style={styles.navigateRowContainer}>
+											<TouchableOpacity style={[styles.navigateButton, {width: "50%"}]} onPress={() => this.setState({routeVisible: true})}>
+												<Text style={{color: "#4cd6de", fontWeight: "bold", fontSize: 17}}>Best Route</Text>
+												<Ionicons name="md-navigate" size={17} color="#4cd6de" />
+											</TouchableOpacity>
+										</View>
 									</View>
 								</View>
 

@@ -70,7 +70,7 @@ const storeStyles = StyleSheet.create({
 		backgroundColor: "#fff3",
 		width: "40%",
 		paddingHorizontal: "3%",
-		height: "50%",
+		height: 38,
 		borderRadius: 20,
 		alignItems: "center",
 		flexDirection: "row",
@@ -522,7 +522,7 @@ export default function PathRouter(props) {
 						</TouchableOpacity>
 					</View>
 
-					<Text style={styles.captionText}>The best path to get the items on your list. Click a store for more info</Text>
+					<Text style={styles.captionText}>The best path to get the items on your list</Text>
 
 					<View style={styles.routeContainer}>
 						<View style={styles.routeTitleContainer}>
@@ -615,7 +615,6 @@ const styles = StyleSheet.create({
 		elevation: 7,
 	},
 	address: {
-		height: "90%",
 		flexDirection: "column",
 		justifyContent: "space-between",
 	},
